@@ -22,4 +22,26 @@ public class SampleServiceTests {
         log.info(service.getClass().getName());
     }
 
+    @Test
+    public void testAdd() {
+
+        try {
+            log.info(service.doAdd("123","234"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testAddErr() {
+
+        try {
+            log.info(service.doAdd("123","asdf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
