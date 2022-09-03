@@ -2,15 +2,48 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        https://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/aop
-       https://www.springframework.org/schema/aop/spring-aop.xsd">
+       https://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
 
     <context:annotation-config/>
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+        <property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"/>
+        <property name="username" value="book_ex"/>
+        <property name="password" value="hwhw9512"/>
+
+    </bean>
+
+    <bean id="dataSource" destroy-method="close"
+          class="com.zaxxer.hikari.HikariDataSource" >
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+    <bean id="sqlSessionFactory"
+          class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:annotation-driven/>
+
+    <mybatis-spring:scan base-package="com.kdd9512.SpringMVCRE4.mapper"/>
+
+
     <!--  service 와 aop 폴더를 scan  -->
     <context:component-scan base-package="com.kdd9512.SpringMVCRE4.service"/>
     <context:component-scan base-package="com.kdd9512.SpringMVCRE4.aop"/>
