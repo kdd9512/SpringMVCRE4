@@ -13,7 +13,7 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd
        http://mybatis.org/schema/mybatis-spring
-       http://mybatis.org/schema/mybatis-spring.xsd">
+       https://mybatis.org/schema/mybatis-spring.xsd">
 
     <context:annotation-config/>
 

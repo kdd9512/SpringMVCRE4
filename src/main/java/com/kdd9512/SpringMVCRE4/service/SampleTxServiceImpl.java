@@ -18,8 +18,9 @@ public class SampleTxServiceImpl implements SampleTxService{
     @Setter(onMethod_ = {@Autowired})
     private Sample2Mapper mapper2;
 
-
-    @Transactional // 트랜잭션 설정. 한 가지 이상의 작업을 묶어서 실행하며, 한 작업이라도 fail 하면 트랜잭션으로 묶인 작업 전체가 fail.
+    // 트랜잭션 설정. 한 가지 이상의 작업을 묶어서 실행하며, 한 작업이라도 fail 하면 트랜잭션으로 묶인 작업 전체가 fail.
+    // 트랜잭션 우선순위 : 메서드(가장높음) -> 클래스 -> 인터페이스(가장낮음) 순.
+    @Transactional
     @Override
     public void addData(String value) {
 

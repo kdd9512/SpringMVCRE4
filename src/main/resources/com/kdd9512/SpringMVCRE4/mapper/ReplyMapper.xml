@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kdd9512.SpringMVCRE4.mapper.ReplyMapper">
+
+    <!-- 새 댓글을 삽입한다. -->
+    <insert id="insert">
+        <![CDATA[
+        insert into tbl_reply (rno, bno, reply, replier)
+        values (seq_reply.nextval, #{bno}, #{reply}, #{replier})
+        ]]>
+    </insert>
+
+    <!-- 특정 댓글을 조회한다. 결과값 ReplyVO-->
+    <select id="read" resultType="com.kdd9512.SpringMVCRE4.domain.ReplyVO">
+        <![CDATA[
+        select *
+        from tbl_reply
+        where rno = #{rno}
+        ]]>
+    </select>
+
+    <delete id="delete">
+        <![CDATA[
+        delete
+        from tbl_reply
+        where rno = #{rno}
+        ]]>
+    </delete>
+
+    <update id="update">
+        <![CDATA[
+        update
+            tbl_reply
+        set reply      = #{reply},
+            updatedate = sysdate
+        where rno = #{rno}
+        ]]>
+    </update>
+
+    <select id="getListWithPaging" resultType="com.kdd9512.SpringMVCRE4.domain.ReplyVO">
+        <![CDATA[
+        select rno,
+               bno,
+               reply,
+               replier,
+               replyDate,
+               updateDate
+        from (
+                 select /* INDEX(tbl_reply idx_reply) */
+                     rownum rn,
+                     bno,
+                     rno,
+                     reply,
+                     replier,
+                     replyDate,
+                     updateDate
+                 from tbl_reply
+                 where bno = #{bno}
+                   and rno > 0
+                   and rownum <= #{cri.pageNum} * #{cri.amount}
+            )
+        where
+              rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
+    </select>
+
+    <select id="getCountByBno" resultType="int">
+        <![CDATA[
+            select count(rno) from tbl_reply where bno = #{bno}
+        ]]>
+    </select>
+
+</mapper>

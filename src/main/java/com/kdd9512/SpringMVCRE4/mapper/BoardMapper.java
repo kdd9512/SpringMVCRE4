@@ -2,6 +2,7 @@ package com.kdd9512.SpringMVCRE4.mapper;
 
 import com.kdd9512.SpringMVCRE4.domain.BoardVO;
 import com.kdd9512.SpringMVCRE4.domain.Criteria;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,5 +24,8 @@ public interface BoardMapper {
     public int update(BoardVO board); // 정상적으로 갱신되었다면 1을 출력할 것.
 
     public int getTotalCount(Criteria cri); // 전체 데이터의 개수처리.
+
+    // 게시물의 댓글 수 증가 or 감소. @Param 으로 복수의 parameter 전달.
+    public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount);
 
 }

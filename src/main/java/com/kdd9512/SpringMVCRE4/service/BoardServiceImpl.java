@@ -14,7 +14,7 @@ import java.util.List;
 @Log4j
 @AllArgsConstructor
 @Service
-public class BoardServiceImpl implements com.kdd9512.SpringMVCRE4.service.BoardService {
+public class BoardServiceImpl implements BoardService {
 
     @Setter(onMethod_ = @Autowired)
     private BoardMapper mapper;
