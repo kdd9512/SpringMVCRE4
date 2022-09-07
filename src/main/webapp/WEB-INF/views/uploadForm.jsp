@@ -1,0 +1,16 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="uploadFormAction" method="post" enctype="multipart/form-data">
+
+    <input type="file" name="uploadFile" multiple>
+    <button>SUBMIT</button>
+
+</form>
+</body>
+</html>

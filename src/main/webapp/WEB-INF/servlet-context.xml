@@ -29,4 +29,10 @@
         <beans:property name="suffix" value=".jsp" />
     </beans:bean>
 
+    <!-- 첨부파일 처리 -->
+    <beans:bean id="multipartResolver"
+                class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+
+    </beans:bean>
+
 </beans:beans>
