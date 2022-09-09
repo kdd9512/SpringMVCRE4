@@ -17,13 +17,35 @@
 <script>
     $(document).ready(function() {
 
+        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar|)$");
+        let maxSize = 5242880; // 5MB
+
+        function checkExtension(fileName, fileSize) {
+
+            if (fileSize >= maxSize) {
+                alert("파일의 용량이 너무 큽니다(최대 5MB)");
+                return false;
+            }
+
+            if (regex.test(fileName)) {
+                alert("해당 종류의 파일은 업로드할 수 없습니다.");
+                return false;
+            }
+
+            return true;
+        } // checkExtension
+
         $("#uploadBtn").on("click", function(e) {
             let formData = new FormData();
             let inputFile = $("input[name='uploadFile']");
             let files = inputFile[0].files;
             console.log(files);
 
-            for(let i = 0; i <files.length; i++) {
+            for(let i = 0; i < files.length; i++) {
+
+                if (!checkExtension(files[i].name, files[i].size)) {
+                    return false;
+                }
                 formData.append("uploadFile", files[i]);
             }
 
@@ -39,6 +61,7 @@
             }); // ajax
 
         }); // .on("click")
+
     });// .ready(function () { ... })
 </script>
 
