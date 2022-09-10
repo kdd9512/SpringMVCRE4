@@ -17,7 +17,7 @@
 <script>
     $(document).ready(function() {
 
-        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar|)$");
+        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
 
         function checkExtension(fileName, fileSize) {
@@ -41,11 +41,18 @@
             let files = inputFile[0].files;
             console.log(files);
 
+            // 업로드할 파일이 없는 경우에도 upload 가 진행되어 500 error 를 발생시킨다.
+            if (files.length == 0) {
+                alert("업로드할 파일이 없습니다...");
+                return false;
+            }
+
             for(let i = 0; i < files.length; i++) {
 
                 if (!checkExtension(files[i].name, files[i].size)) {
                     return false;
                 }
+
                 formData.append("uploadFile", files[i]);
             }
 
@@ -56,7 +63,7 @@
                 data : formData,
                 type : "POST",
                 success : function (result) {
-                    alert("uploaded");
+                    alert("uploaded " + result);
                 }
             }); // ajax
 

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 @Controller
 @Log4j
@@ -24,7 +27,18 @@ public class UploadController {
         log.info("Upload Ajax");
     }
 
+    // 경로 생성을 위한 method
+    private String getFolder(){
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String str = sdf.format(date);
+
+        return str.replace("-", File.separator);
+
+    }
+
+    // POST 기능
     @PostMapping("/uploadFormAction")
     public void uploadFormPost(MultipartFile[] uploadFile, Model model) {
 
@@ -55,6 +69,13 @@ public class UploadController {
         log.info("Update Ajax POST...........................");
         String uploadFolder = "C:\\JAVA\\galupload";
 
+        File uploadPath = new File(uploadFolder, getFolder());
+        log.info("Upload Folder : " + uploadPath);
+
+        if (!uploadPath.exists()) {
+            uploadPath.mkdirs();
+        }
+
         for (MultipartFile multipartFile : uploadFile) {
 
             log.info("-----------------------------------------------------------");
@@ -64,9 +85,15 @@ public class UploadController {
             String uploadFileName = multipartFile.getOriginalFilename();
 
             uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
-            log.info("File Name Only" + uploadFileName);
+            log.info("File Name Only : " + uploadFileName);
 
-            File saveFile = new File(uploadFolder, uploadFileName);
+            // UUID 를 첨부한 파일명으로 중복파일 생성으로 인해 기존 파일이 사라지는 문제를 제거한다.
+            UUID uuid = UUID.randomUUID();
+
+            uploadFileName = uuid + "_" + uploadFileName;
+
+//            File saveFile = new File(uploadFolder, uploadFileName);
+            File saveFile = new File(uploadPath, uploadFileName);
 
             try {
                 multipartFile.transferTo(saveFile);
