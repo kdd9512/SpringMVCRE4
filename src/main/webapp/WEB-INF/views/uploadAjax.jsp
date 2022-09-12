@@ -62,6 +62,7 @@
                 contentType : false,
                 data : formData,
                 type : "POST",
+                dataType : "JSON",
                 success : function (result) {
                     alert("uploaded " + result);
                 }
