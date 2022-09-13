@@ -11,10 +11,19 @@
     <input type="file" name='uploadFile' multiple>
 </div>
 <button id="uploadBtn">UPLOAD</button>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+
+<%-- 파일 미리보기 --%>
+<div class="uploadResult">
+    <ul>
+    </ul>
+</div>
+
+
+<script type="text/javascript"
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function() {
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
@@ -34,6 +43,9 @@
 
             return true;
         } // checkExtension
+
+        // 업로드 부분 초기화를 위하여 아무 파일도 첨부되지 않은 <input type="file" ... > 을 복사.
+        let cloneObj = $(".uploadDiv").clone();
 
         $("#uploadBtn").on("click", function(e) {
             let formData = new FormData();
@@ -65,10 +77,29 @@
                 dataType : "JSON",
                 success : function (result) {
                     alert("uploaded " + result);
+
+                    // upload 한 파일의 이름을 화면에 출력한다.
+                    showUploadedFile(result);
+
+                    // upload 이후 input 을 초기화한다.
+                    $(".uploadDiv").html(cloneObj.html());
+
                 }
             }); // ajax
 
         }); // .on("click")
+
+        let uploadResult = $(".uploadResult ul");
+
+        function showUploadedFile(uploadResultArr) {
+            let str = "";
+
+            $(uploadResultArr).each(function (i, obj) {
+                str += "<li>" + obj.fileName + "</li>";
+            });
+
+            uploadResult.append(str);
+        }
 
     });// .ready(function () { ... })
 </script>
