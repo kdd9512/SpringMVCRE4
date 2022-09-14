@@ -3,11 +3,13 @@ package com.kdd9512.SpringMVCRE4.controller;
 import com.kdd9512.SpringMVCRE4.domain.AttachFileDTO;
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,7 +100,7 @@ public class UploadController {
 
         // 폴더 생성.
         String uploadFolderPath = getFolder(); // 화면 표시를 위해 보낼 객체에 폴더경로 정보를 저장한다.
-        File uploadPath = new File(uploadFolder, getFolder());
+        File uploadPath = new File(uploadFolder, uploadFolderPath);
         log.info("Upload Folder : " + uploadPath);
 
         if (!uploadPath.exists()) {
@@ -135,6 +137,8 @@ public class UploadController {
 
                 // 업로드하는 파일이 이미지타입인지 체크
                 if (checkImageType(saveFile)) {
+                    attachDTO.setImage(true);
+
                     FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "th_" + uploadFileName));
                     Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
                     thumbnail.close();
@@ -151,5 +155,25 @@ public class UploadController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @GetMapping("/display")
+    @ResponseBody
+    public ResponseEntity<byte[]> getFile(String fileName) {
+
+        log.info("fileName : " + fileName);
+
+        File file = new File("C:\\JAVA\\galupload\\" + fileName);
+        log.info("file : " + file);
+
+        ResponseEntity<byte[]> result = null;
+
+        try {
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", Files.probeContentType(file.toPath()));
+            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),header, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }

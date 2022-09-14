@@ -6,6 +6,14 @@
     <title>Title</title>
 </head>
 <body>
+<style type="text/css">
+
+    .uploadResult { width:100%; background-color: gray;}
+    .uploadResult ul {display:flex; flex-flow: row; justify-content: center; align-items: center;}
+    .uploadResult ul li {list-style: none; padding: 10px;}
+    .uploadResult ul li img {width: 10%; }
+
+</style>
 <h1>Upload With AJAX</h1>
 <div class="uploadDiv">
     <input type="file" name='uploadFile' multiple>
@@ -93,11 +101,16 @@
 
         function showUploadedFile(uploadResultArr) {
             let str = "";
-
+            // 이미지파일이 아니라면(=일반파일이라면) 이름과 파일이미지를 표시하게 조치.
+            // 이미지파일이라면 섬네일을 표시.
             $(uploadResultArr).each(function (i, obj) {
-                str += "<li>" + obj.fileName + "</li>";
+                if (!obj.image) {
+                    str += "<li><img src='/resources/img/attach.png'>" + obj.fileName + "</li>";
+                } else {
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                    str += "<li><img src='/display?fileName="+fileCallPath+"'></li>";
+                }
             });
-
             uploadResult.append(str);
         }
 
