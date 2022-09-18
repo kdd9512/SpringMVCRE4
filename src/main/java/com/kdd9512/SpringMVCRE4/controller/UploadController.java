@@ -189,7 +189,7 @@ public class UploadController {
 
         log.info("download file : " + fileName);
 
-        FileSystemResource resource = new FileSystemResource("C:\\JAVA\\galupload\\" + fileName);
+        Resource resource = new FileSystemResource("C:\\JAVA\\galupload\\" + fileName);
         log.info("resource : " + resource);
 
         if (!resource.exists()) {
@@ -197,6 +197,10 @@ public class UploadController {
         }
 
         String resourceName = resource.getFilename();
+
+        // 다운로드 받는 파일 이름에서 UUID 제거.
+        String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+
         HttpHeaders headers = new HttpHeaders();
 
         // 브라우저별로 구분하여 headers 에 삽입한다.
@@ -204,15 +208,17 @@ public class UploadController {
             String downloadName = null;
             if (userAgent.contains("Trident")) {
                 log.info("IE Browser");
-                downloadName = URLEncoder.encode(resourceName, "UTF-8").replaceAll("\\+", " ");
+                downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
             } else if (userAgent.contains("Edge")) {
                 log.info("MS Edge");
-                downloadName = URLEncoder.encode(resourceName, "UTF-8");
+                downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8");
                 log.info("Edge Name : " + downloadName);
             } else {
                 log.info("Google Chrome");
-                downloadName = new String(resourceName.getBytes("UTF-8"), "ISO-8859-1");
+                downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
             }
+
+            log.info("downloadName : " + downloadName);
 
             headers.add("Content-Disposition", "attachment; filename=" +
                     downloadName);
