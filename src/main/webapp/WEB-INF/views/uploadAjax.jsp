@@ -8,10 +8,26 @@
 <body>
 <style type="text/css">
 
-    .uploadResult { width:100%; background-color: gray;}
-    .uploadResult ul {display:flex; flex-flow: row; justify-content: center; align-items: center;}
-    .uploadResult ul li {list-style: none; padding: 10px;}
-    .uploadResult ul li img {width: 10%; }
+    .uploadResult {
+        width: 100%;
+        background-color: gray;
+    }
+
+    .uploadResult ul {
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+    }
+
+    .uploadResult ul li img {
+        width: 10%;
+    }
 
 </style>
 <h1>Upload With AJAX</h1>
@@ -32,7 +48,13 @@
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
+
+
+    function showImage(fileCallPath) {
+        alert(fileCallPath);
+    }
+
+    $(document).ready(function () {
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
@@ -55,7 +77,7 @@
         // 업로드 부분 초기화를 위하여 아무 파일도 첨부되지 않은 <input type="file" ... > 을 복사.
         let cloneObj = $(".uploadDiv").clone();
 
-        $("#uploadBtn").on("click", function(e) {
+        $("#uploadBtn").on("click", function (e) {
             let formData = new FormData();
             let inputFile = $("input[name='uploadFile']");
             let files = inputFile[0].files;
@@ -67,7 +89,7 @@
                 return false;
             }
 
-            for(let i = 0; i < files.length; i++) {
+            for (let i = 0; i < files.length; i++) {
 
                 if (!checkExtension(files[i].name, files[i].size)) {
                     return false;
@@ -77,14 +99,14 @@
             }
 
             $.ajax({
-                url : "/uploadAjaxAction",
-                processData : false,
-                contentType : false,
-                data : formData,
-                type : "POST",
-                dataType : "JSON",
-                success : function (result) {
-                    alert("uploaded " + result);
+                url: "/uploadAjaxAction",
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: "POST",
+                dataType: "JSON",
+                success: function (result) {
+                    // alert("uploaded " + result);
 
                     // upload 한 파일의 이름을 화면에 출력한다.
                     showUploadedFile(result);
@@ -106,12 +128,17 @@
             $(uploadResultArr).each(function (i, obj) {
                 if (!obj.image) {
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
-                    str += "<li><a href='/download?fileName="+ fileCallPath +"'>" +
+                    str += "<li><a href='/download?fileName=" + fileCallPath + "'>" +
                         "<img src='/resources/img/attach.png'>" + obj.fileName + "</a></li>";
                 } else {
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
-                    str += "<li><a href='/download?fileName="+ fileCallPath +"'>"
-                        + "<img src='/display?fileName="+fileCallPath+"'/>" +
+                    let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
+                    originPath.replace(new RegExp(/\\/g), "/");
+
+                    str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">" +
+                        // "<a href='/download?fileName=" + fileCallPath + "'>" +
+                        "<img src='/display?fileName=" + fileCallPath + "'/>" +
+                        // "</img></a></a></li>";
                         "</img></a></li>";
                 }
             });
