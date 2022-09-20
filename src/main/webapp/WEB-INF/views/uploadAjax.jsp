@@ -29,6 +29,33 @@
         width: 10%;
     }
 
+    .uploadResult ul li span {
+        color:white;
+    }
+
+    .bigPictureWrapper {
+        position: absolute;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: gray;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.5);
+    }
+    .bigPicture {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bigPicture img {
+        width: 600px;
+    }
+
 </style>
 <h1>Upload With AJAX</h1>
 <div class="uploadDiv">
@@ -42,6 +69,12 @@
     </ul>
 </div>
 
+<%-- 원본그림 보기. --%>
+<div class="bigPictureWrapper">
+    <div class="bigPicture">
+    </div>
+</div>
+
 
 <script type="text/javascript"
         src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -51,8 +84,24 @@
 
 
     function showImage(fileCallPath) {
-        alert(fileCallPath);
+        // alert(encodeURI(fileCallPath));
+        $(".bigPictureWrapper").css("display", "flex").show();
+        $(".bigPicture")
+            .html("<img src='/display?fileName=" + encodeURI(fileCallPath)+"'>")
+            .animate({width: '100%', height: '100%'}, 1000);
     }
+
+    $(".bigPictureWrapper").on("click", function(e){
+        $('.bigPicture').animate({width: '0%', height: '0%'}, 1000);
+        setTimeout(() => {
+            $(this).hide();
+        }, 1000);
+        // IE11 용. IE 는 arrow function 이 동작하지 않는다.
+        /*setTimeout(function(){
+            $('.bigPicture').hide();
+        }, 1000);*/
+
+    })
 
     $(document).ready(function () {
 
@@ -133,8 +182,10 @@
                 } else {
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
                     let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
-                    originPath.replace(new RegExp(/\\/g), "/");
+                    originPath = originPath.replace(new RegExp(/\\/g), "/");
 
+                    console.log("fileCallPath : " + fileCallPath);
+                    console.log("originPath : " + originPath);
                     str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">" +
                         // "<a href='/download?fileName=" + fileCallPath + "'>" +
                         "<img src='/display?fileName=" + fileCallPath + "'/>" +
