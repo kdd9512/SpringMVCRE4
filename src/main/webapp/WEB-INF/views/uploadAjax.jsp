@@ -176,9 +176,14 @@
             // 이미지파일이라면 섬네일을 표시.
             $(uploadResultArr).each(function (i, obj) {
                 if (!obj.image) {
+
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
-                    str += "<li><a href='/download?fileName=" + fileCallPath + "'>" +
-                        "<img src='/resources/img/attach.png'>" + obj.fileName + "</a></li>";
+                    let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+
+                    str += "<li><div><a href='/download?fileName=" + fileCallPath + "'>" +
+                        "<img src='/resources/img/attach.png'>" + obj.fileName + "</a>" +
+                        "<span data-file=\'"+ fileCallPath + "\' data-type='file'>&nbsp;&times;</span>" +
+                        "</div></li>";
                 } else {
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
                     let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
@@ -187,14 +192,31 @@
                     console.log("fileCallPath : " + fileCallPath);
                     console.log("originPath : " + originPath);
                     str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">" +
-                        // "<a href='/download?fileName=" + fileCallPath + "'>" +
-                        "<img src='/display?fileName=" + fileCallPath + "'/>" +
-                        // "</img></a></a></li>";
-                        "</img></a></li>";
+                        // "<a href='/download?fileName=" + fileCallPath + "'/>" +
+                        "<img src='/display?fileName=" + fileCallPath + "'/></a>" +
+                        "<span data-file=\'"+ fileCallPath + "\' data-type='file'>&nbsp;&times;</span>" +
+                        "</li>";
                 }
             });
             uploadResult.append(str);
         }
+
+        $(".uploadResult").on("click","span",function(e) {
+
+            let targetFile = $(this).data("file");
+            let type = $(this).data("type");
+            console.log(targetFile);
+
+            $.ajax({
+                url: '/deleteFile',
+                data: ({fileName : targetFile, type : type}),
+                dataType: "text",
+                type: 'POST',
+                success: function(result) {
+                    alert(result);
+                }
+            });
+        });
 
     });// .ready(function () { ... })
 </script>
