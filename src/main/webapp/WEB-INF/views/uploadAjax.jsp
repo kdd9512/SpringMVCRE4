@@ -185,7 +185,7 @@
                         "<span data-file=\'"+ fileCallPath + "\' data-type='file'>&nbsp;&times;</span>" +
                         "</div></li>";
                 } else {
-                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/th_" + obj.uuid + "_" + obj.fileName);
                     let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
                     originPath = originPath.replace(new RegExp(/\\/g), "/");
 
@@ -194,7 +194,7 @@
                     str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">" +
                         // "<a href='/download?fileName=" + fileCallPath + "'/>" +
                         "<img src='/display?fileName=" + fileCallPath + "'/></a>" +
-                        "<span data-file=\'"+ fileCallPath + "\' data-type='file'>&nbsp;&times;</span>" +
+                        "<span data-file=\'"+ fileCallPath + "\' data-type='image'>&nbsp;&times;</span>" +
                         "</li>";
                 }
             });

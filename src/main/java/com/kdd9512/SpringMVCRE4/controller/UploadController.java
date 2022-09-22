@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -146,6 +147,7 @@ public class UploadController {
                     attachDTO.setImage(true);
 
                     FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "th_" + uploadFileName));
+                    log.info("thumbnail file location : " + thumbnail);
                     Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
                     thumbnail.close();
                 }
@@ -228,6 +230,38 @@ public class UploadController {
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/deleteFile")
+    @ResponseBody
+    public ResponseEntity<String> deleteFile(String fileName, String type) {
+
+        log.info("Delete file : " + fileName);
+        log.info("Delete file type : " + type);
+
+        File file;
+
+        try {
+            file = new File("C:\\JAVA\\galupload\\" + URLDecoder.decode(fileName, "UTF-8"));
+            System.out.println("decoded file : " + file);
+            file.delete();
+
+            if (type.equals("image")) {
+                log.info("file.getAbsolutePath()" + file.getAbsolutePath());
+                String largeFileName = file.getAbsolutePath().replace("th_", "");
+
+                file = new File(largeFileName);
+                System.out.println(file);
+                file.delete();
+
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<String>("deleted", HttpStatus.OK);
     }
 
 }
