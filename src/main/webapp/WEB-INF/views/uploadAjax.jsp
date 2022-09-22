@@ -26,7 +26,7 @@
     }
 
     .uploadResult ul li img {
-        width: 10%;
+        width: 50%;
     }
 
     .uploadResult ul li span {
