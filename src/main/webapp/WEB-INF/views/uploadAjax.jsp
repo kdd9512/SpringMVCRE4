@@ -205,6 +205,7 @@
 
             let targetFile = $(this).data("file");
             let type = $(this).data("type");
+            let targetLi = $(this).closest("li");
             console.log(targetFile);
 
             $.ajax({
@@ -214,6 +215,7 @@
                 type: 'POST',
                 success: function(result) {
                     alert(result);
+                    targetLi.remove();
                 }
             });
         });

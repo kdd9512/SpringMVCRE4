@@ -168,15 +168,71 @@
                     alert("uploaded " + result);
 
                     // upload 한 파일의 이름을 화면에 출력한다.
-                    // showUploadedFile(result);
+                    showUploadResult(result);
 
                     // upload 이후 input 을 초기화한다.
                     $(".uploadDiv").html(cloneObj.html());
                 }
             }); // ajax
 
-        })
-    })
+        });
+
+        function showUploadResult(uploadResultArr) {
+            if(!uploadResultArr || uploadResultArr.length == 0) {
+                return;
+            }
+
+            let uploadUL = $(".uploadResult ul");
+            let str = "";
+
+            $(uploadResultArr).each(function (i, obj) {
+                if (!obj.image) {
+
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+
+                    str += "<li><div>" +
+                        "<span> " + obj.fileName + "</span>" +
+                        "<button type='button' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
+                        "<img src='/display?fileName=" + fileCallPath + "'>" +
+                        "</div></li>";
+                } else {
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/th_" + obj.uuid + "_" + obj.fileName);
+                    let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+                    // let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
+                    // originPath = originPath.replace(new RegExp(/\\/g), "/");
+
+                    str += "<li><div>" +
+                        "<span> " + obj.fileName +"</span>" +
+                        "<button type='button' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
+                        "<img src='/resources/img/attach.png'></a>" +
+                        "</div></li>";
+                }
+                uploadUL.append(str);
+            });
+
+
+        }
+
+        $(".uploadResult").on("click","button",function(e) {
+
+            let targetFile = $(this).data("file");
+            let type = $(this).data("type");
+            console.log(targetFile);
+            let targetLi = $(this).closest("li");
+
+            $.ajax({
+                url: '/deleteFile',
+                data: ({fileName : targetFile, type : type}),
+                dataType: "text",
+                type: 'POST',
+                success: function(result) {
+                    alert(result);
+                    targetLi.remove();
+                }
+            });
+        });
+
+    });
 </script>
 
 <%@ include file="../includes/footer.jsp" %>
