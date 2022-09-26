@@ -122,7 +122,24 @@
         $("button[type='submit']").on("click", function (e) {
             e.preventDefault();
             console.log("clicked")
-        })
+        });
+
+        let str = "";
+
+        $(".uploadResult ul li").each(function (i, obj) {
+
+            let jobj = $(obj);
+            console.dir(jobj);
+
+            // BoardVO 가 수집한 첨부파일의 정보의 일부를 이하 hidden 태그에 담아 jsp 에서 활용한다.
+            str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("fileName") + "'>";
+            str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
+            str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("uploadPath") + "'>";
+            str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("fileType") + "'>";
+
+            formObj.append(str).submit();
+
+        });
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
@@ -151,10 +168,10 @@
 
             for (let i = 0; i < files.length; i++) {
 
-                if(!checkExtension(files[i].name, files[i].size)) {
+                if (!checkExtension(files[i].name, files[i].size)) {
                     return false;
                 }
-                formData.append("uploadFile",files[i]);
+                formData.append("uploadFile", files[i]);
             }
 
             $.ajax({
@@ -178,7 +195,7 @@
         });
 
         function showUploadResult(uploadResultArr) {
-            if(!uploadResultArr || uploadResultArr.length == 0) {
+            if (!uploadResultArr || uploadResultArr.length == 0) {
                 return;
             }
 
@@ -186,13 +203,15 @@
             let str = "";
 
             $(uploadResultArr).each(function (i, obj) {
-                if (!obj.image) {
+                if (obj.image) {
 
                     let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
 
-                    str += "<li><div>" +
+                    str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
+                        "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
                         "<span> " + obj.fileName + "</span>" +
-                        "<button type='button' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
                         "<img src='/display?fileName=" + fileCallPath + "'>" +
                         "</div></li>";
                 } else {
@@ -201,9 +220,11 @@
                     // let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
                     // originPath = originPath.replace(new RegExp(/\\/g), "/");
 
-                    str += "<li><div>" +
-                        "<span> " + obj.fileName +"</span>" +
-                        "<button type='button' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
+                    str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
+                        "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
+                        "<span> " + obj.fileName + "</span>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
                         "<img src='/resources/img/attach.png'></a>" +
                         "</div></li>";
                 }
@@ -213,19 +234,19 @@
 
         }
 
-        $(".uploadResult").on("click","button",function(e) {
+        $(".uploadResult").on("click", "button", function (e) {
 
             let targetFile = $(this).data("file");
             let type = $(this).data("type");
-            console.log(targetFile);
             let targetLi = $(this).closest("li");
+            console.log("delete this : " + targetFile);
 
             $.ajax({
                 url: '/deleteFile',
-                data: ({fileName : targetFile, type : type}),
+                data: ({fileName: targetFile, type: type}),
                 dataType: "text",
                 type: 'POST',
-                success: function(result) {
+                success: function (result) {
                     alert(result);
                     targetLi.remove();
                 }
