@@ -2,12 +2,14 @@ package com.kdd9512.SpringMVCRE4.service;
 
 import com.kdd9512.SpringMVCRE4.domain.BoardVO;
 import com.kdd9512.SpringMVCRE4.domain.Criteria;
+import com.kdd9512.SpringMVCRE4.mapper.BoardAttachMapper;
 import com.kdd9512.SpringMVCRE4.mapper.BoardMapper;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,11 +21,25 @@ public class BoardServiceImpl implements BoardService {
     @Setter(onMethod_ = @Autowired)
     private BoardMapper mapper;
 
+    @Setter(onMethod_ = @Autowired)
+    private BoardAttachMapper attachMapper;
+
+    @Transactional // 한 메서드에서 두 개 이상의 작업을 해야 하므로.
     @Override
     public void register(BoardVO board) {
         log.info("register : [ " + board + " ]");
 
         mapper.insertSelectKey(board);
+
+        if (board.getAttachList() == null || board.getAttachList().size() <= 0){
+            return;
+        }
+
+        board.getAttachList().forEach(attach -> {
+            attach.setBno(board.getBno());
+            attachMapper.insert(attach);
+        });
+
     }
 
     @Override

@@ -41,17 +41,22 @@ public class BoardController {
 
     @GetMapping("/register")
     public void register() {
-
     }
 
     @PostMapping("/register")
     public String register(BoardVO board, RedirectAttributes attributes) {
-
+        log.info("====================================================================");
         log.info(("register : [ " + board + " ]"));
 
-        service.register(board);
+        if (board.getAttachList() != null) {
+            // board.getAttachList().forEach(attach -> log.info(attach));
+            board.getAttachList().forEach(log::info);
+        }
 
-        attributes.addFlashAttribute("result", board.getBno());
+        log.info("====================================================================");
+//        service.register(board);
+//
+//        attributes.addFlashAttribute("result", board.getBno());
 
         return "redirect:/board/list";
 
