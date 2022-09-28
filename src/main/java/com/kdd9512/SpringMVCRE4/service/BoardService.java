@@ -1,5 +1,6 @@
 package com.kdd9512.SpringMVCRE4.service;
 
+import com.kdd9512.SpringMVCRE4.domain.BoardAttachVO;
 import com.kdd9512.SpringMVCRE4.domain.BoardVO;
 import com.kdd9512.SpringMVCRE4.domain.Criteria;
 
@@ -19,5 +20,7 @@ public interface BoardService {
     public List<BoardVO> getList(Criteria cri);
 
     public int getTotal(Criteria cri);
+
+    public List<BoardAttachVO> getAttachList(Long bno);
 
 }

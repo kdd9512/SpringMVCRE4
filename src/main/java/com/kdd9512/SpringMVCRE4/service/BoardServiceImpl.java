@@ -1,5 +1,6 @@
 package com.kdd9512.SpringMVCRE4.service;
 
+import com.kdd9512.SpringMVCRE4.domain.BoardAttachVO;
 import com.kdd9512.SpringMVCRE4.domain.BoardVO;
 import com.kdd9512.SpringMVCRE4.domain.Criteria;
 import com.kdd9512.SpringMVCRE4.mapper.BoardAttachMapper;
@@ -83,4 +84,11 @@ public class BoardServiceImpl implements BoardService {
         return mapper.getTotalCount(cri);
     }
 
+    @Override
+    public List<BoardAttachVO> getAttachList(Long bno) {
+        log.info("get attach list by bno : " + bno);
+
+        return attachMapper.findByBno(bno);
+
+    }
 }
