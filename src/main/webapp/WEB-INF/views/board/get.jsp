@@ -9,6 +9,59 @@
 </div>
 <%--/.row--%>
 
+<style type="text/css">
+
+    .uploadResult {
+        width: 100%;
+        background-color: gray;
+    }
+
+    .uploadResult ul {
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+    }
+
+    .uploadResult ul li img {
+        width: 50%;
+    }
+
+    .uploadResult ul li span {
+        color:white;
+    }
+
+    .bigPictureWrapper {
+        position: absolute;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: gray;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.5);
+    }
+    .bigPicture {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bigPicture img {
+        width: 600px;
+    }
+
+</style>
+<%-- style end --%>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
@@ -66,6 +119,24 @@
 </div>
 <%-- /.row --%>
 
+<div class="bigPictureWrapper">
+    <div class="bigPicture"></div>
+</div>
+
+<%-- File area start --%>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Files</div>
+            <div class="panel-body">
+                <div class="uploadResult">
+                    <ul></ul>
+                </div><%-- uploadResult --%>
+            </div><%-- panel-body --%>
+        </div><%--panel--%>
+    </div><%-- col --%>
+</div><%-- Files row end  --%>
+
 <%-- reply area start --%>
 <div class="row">
     <div class="col-lg-12">
@@ -99,6 +170,7 @@
         <%-- row end --%>
     </div>
     <%-- reply area end --%>
+
     <%-- Modal --%>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel" aria-hidden="true">
@@ -308,7 +380,7 @@
 
                 }
 
-                if(next) {
+                if (next) {
                     str += "<li class='page-item'><a class='page-link' href='" + (endNum + 1) + "'>Next</a></li>";
                 }
 
@@ -399,5 +471,18 @@
             });
 
         });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            let bno = "<c:out value="${board.bno}"/>";
+
+            $.getJSON("/board/getAttachList", {bno: bno}, function (arr) {
+                console.log(arr);
+            });
+
+        })
+
     </script>
 <%@ include file="../includes/footer.jsp" %>

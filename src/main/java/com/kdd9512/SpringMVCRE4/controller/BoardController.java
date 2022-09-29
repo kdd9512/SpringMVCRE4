@@ -1,15 +1,21 @@
 package com.kdd9512.SpringMVCRE4.controller;
 
+import com.kdd9512.SpringMVCRE4.domain.BoardAttachVO;
 import com.kdd9512.SpringMVCRE4.domain.BoardVO;
 import com.kdd9512.SpringMVCRE4.domain.Criteria;
 import com.kdd9512.SpringMVCRE4.domain.PageDTO;
 import com.kdd9512.SpringMVCRE4.service.BoardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @Log4j
@@ -28,7 +34,7 @@ public class BoardController {
 
     @GetMapping("/list")
     public void list(Criteria cri, Model model) {
-        log.info("list =============[ " + cri +  " ]================");
+        log.info("list =============[ " + cri + " ]================");
 
         model.addAttribute("list", service.getList(cri));
 //        model.addAttribute("pageMaker", new PageDTO(cri, 123)); 임시로 페이지 수 설정.
@@ -62,7 +68,7 @@ public class BoardController {
 
     }
 
-    @GetMapping({"/get","/modify"})
+    @GetMapping({"/get", "/modify"})
     public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri,
                     Model model) {
         log.info("================================/get or /modify========================================");
@@ -89,7 +95,7 @@ public class BoardController {
     }
 
     @PostMapping("/remove") // 작업 후 redirect 해야하므로 RedirectAttributes
-    public String remove(@RequestParam("bno") Long bno,RedirectAttributes attributes,
+    public String remove(@RequestParam("bno") Long bno, RedirectAttributes attributes,
                          Criteria cri) {
         // 더 이상 ModelAttribute 에 담아 param 을 전달할 필요가 없다. 해당 기능은 getListLink(); 가 대신함.
 //                         @ModelAttribute("cri") Criteria cri) {
@@ -104,5 +110,18 @@ public class BoardController {
 
         return "redirect:/board/list" + cri.getListLink();
     }
+
+
+    // 특정 게시물 번호를 이용하여 해당 글의 첨부파일 정보를 JSON 으로 반환한다.
+    @GetMapping(value = "/getAttachList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno) {
+
+        log.info("getAttachList : " + bno);
+
+        return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+    }
+
+
 
 }
