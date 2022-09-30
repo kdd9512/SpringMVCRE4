@@ -121,24 +121,21 @@
 
         $("button[type='submit']").on("click", function (e) {
             e.preventDefault();
-            console.log("clicked")
-        });
+            let str = "";
 
-        let str = "";
+            $(".uploadResult ul li").each(function (i, obj) {
 
-        $(".uploadResult ul li").each(function (i, obj) {
+                let jobj = $(obj);
+                console.dir(jobj);
 
-            let jobj = $(obj);
-            console.dir(jobj);
-
-            // BoardVO 가 수집한 첨부파일의 정보의 일부를 이하 hidden 태그에 담아 jsp 에서 활용한다.
-            str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("fileName") + "'>";
-            str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
-            str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("uploadPath") + "'>";
-            str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("fileType") + "'>";
+                // BoardVO 가 수집한 첨부파일의 정보의 일부를 이하 hidden 태그에 담아 jsp 에서 활용한다.
+                str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
+                str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
+                str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("path") + "'>";
+                str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("type") + "'>";
+            });
 
             formObj.append(str).submit();
-
         });
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
@@ -187,8 +184,6 @@
                     // upload 한 파일의 이름을 화면에 출력한다.
                     showUploadResult(result);
 
-                    // upload 이후 input 을 초기화한다.
-                    $(".uploadDiv").html(cloneObj.html());
                 }
             }); // ajax
 
@@ -205,11 +200,11 @@
             $(uploadResultArr).each(function (i, obj) {
                 if (obj.image) {
 
-                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/th_" + obj.uuid + "_" + obj.fileName);
 
                     str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
                         "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
-                        "<span> " + obj.fileName + "</span>" +
+                        "<span>" + obj.fileName + "</span>" +
                         "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
                         "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
                         "<img src='/display?fileName=" + fileCallPath + "'>" +
@@ -223,7 +218,7 @@
                     str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
                         "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
                         "<span> " + obj.fileName + "</span>" +
-                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' " +
                         "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
                         "<img src='/resources/img/attach.png'></a>" +
                         "</div></li>";

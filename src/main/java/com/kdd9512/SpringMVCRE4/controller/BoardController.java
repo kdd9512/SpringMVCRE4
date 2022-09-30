@@ -60,9 +60,9 @@ public class BoardController {
         }
 
         log.info("====================================================================");
-//        service.register(board);
-//
-//        attributes.addFlashAttribute("result", board.getBno());
+        service.register(board);
+
+        attributes.addFlashAttribute("result", board.getBno());
 
         return "redirect:/board/list";
 

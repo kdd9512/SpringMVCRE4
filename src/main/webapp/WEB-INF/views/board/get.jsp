@@ -33,7 +33,7 @@
     }
 
     .uploadResult ul li span {
-        color:white;
+        color: white;
     }
 
     .bigPictureWrapper {
@@ -48,6 +48,7 @@
         z-index: 100;
         background: rgba(255, 255, 255, 0.5);
     }
+
     .bigPicture {
         position: relative;
         display: flex;
@@ -131,10 +132,14 @@
             <div class="panel-body">
                 <div class="uploadResult">
                     <ul></ul>
-                </div><%-- uploadResult --%>
-            </div><%-- panel-body --%>
-        </div><%--panel--%>
-    </div><%-- col --%>
+                </div>
+                <%-- uploadResult --%>
+            </div>
+            <%-- panel-body --%>
+        </div>
+        <%--panel--%>
+    </div>
+    <%-- col --%>
 </div><%-- Files row end  --%>
 
 <%-- reply area start --%>
@@ -482,7 +487,29 @@
                 console.log(arr);
 
                 let str = "";
-            });
+
+                $(arr).each(function (i, attach) {
+
+                    if (attach.fileType) {
+                        let fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
+
+                        str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                            "data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "'>" +
+                            "<div><img src='/display?fileName=" + fileCallPath + "'>" +
+                            "</div></li>";
+
+                    } else {
+
+                        str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                            "data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "'>" +
+                            "<div><span>" + attach.fileName + "</span><br/>" +
+                            "<img src='/resources/img/attach.png'/>" +
+                            "</div></li>";
+
+                    }
+                    $(".uploadResult ul").html(str);
+                });
+            }); // getJSON end.
 
         })
 

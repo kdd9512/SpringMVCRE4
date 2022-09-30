@@ -5,8 +5,8 @@
 
     <insert id="insert">
         <![CDATA[
-        insert into tbl_attach (uuid, uploadPath, fileName, filetype, bno)
-        values (#{uuid}, #{uploadPath}, #{fileName}, #{filetype}, #{bno})
+        insert into tbl_attach (uuid, uploadpath, filename, filetype, bno)
+        values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
         ]]>
     </insert>
 
