@@ -480,6 +480,8 @@
 
             $.getJSON("/board/getAttachList", {bno: bno}, function (arr) {
                 console.log(arr);
+
+                let str = "";
             });
 
         })
