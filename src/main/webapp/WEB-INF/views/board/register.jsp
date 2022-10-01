@@ -140,7 +140,6 @@
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
-        let cloneObj = $(".uploadDiv").clone();
 
         function checkExtension(fileName, fileSize) {
 
@@ -179,8 +178,6 @@
                 type: "POST",
                 dataType: "JSON",
                 success: function (result) {
-                    alert("uploaded " + result);
-
                     // upload 한 파일의 이름을 화면에 출력한다.
                     showUploadResult(result);
 
@@ -210,7 +207,7 @@
                         "<img src='/display?fileName=" + fileCallPath + "'>" +
                         "</div></li>";
                 } else {
-                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/th_" + obj.uuid + "_" + obj.fileName);
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
                     let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
                     // let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
                     // originPath = originPath.replace(new RegExp(/\\/g), "/");
@@ -223,10 +220,8 @@
                         "<img src='/resources/img/attach.png'></a>" +
                         "</div></li>";
                 }
-                uploadUL.append(str);
             });
-
-
+            uploadUL.append(str);
         }
 
         $(".uploadResult").on("click", "button", function (e) {
@@ -242,7 +237,6 @@
                 dataType: "text",
                 type: 'POST',
                 success: function (result) {
-                    alert(result);
                     targetLi.remove();
                 }
             });
