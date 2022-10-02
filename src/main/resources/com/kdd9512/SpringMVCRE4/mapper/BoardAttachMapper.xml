@@ -14,7 +14,7 @@
         <![CDATA[
         delete
         from tbl_attach
-        where uuid = "#{uuid}"
+        where uuid = #{uuid}
         ]]>
     </delete>
 
@@ -22,7 +22,7 @@
         <![CDATA[
         select *
         from tbl_attach
-        where bno = #{bno};
+        where bno = #{bno}
         ]]>
     </select>
 

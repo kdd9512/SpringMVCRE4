@@ -185,6 +185,13 @@
         $(".move").on("click", function (e) {
 
             e.preventDefault();
+
+            // bno 가 중복으로 생성되어 링크가 제대로 동작하지 않는 경우를 방지. 추후 삭제 예정.
+            let bno = actionForm.find("input[name='bno']").val();
+            if(bno!=''){
+                actionForm.find("input[name='bno']").remove();
+            }
+
             // 이하의 input 태그를 추가로 전송한다. .attr() 로 요소의 값을 추출하고. .append() 로 선택요소의 마지막에 추가한다.
             // this(=a태그)의 href 에 적힌 주소에는 value 로 bno 가 담겨있으므로 href 값을 가져오면 해결.
             actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href") +"'>")

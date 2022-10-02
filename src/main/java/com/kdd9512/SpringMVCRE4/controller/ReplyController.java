@@ -33,17 +33,17 @@ public class ReplyController {
 
         log.info("Reply InsertCnt : " + insertCnt);
 
-        return insertCnt == 1 ?
-                new ResponseEntity<>("success", HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return insertCnt == 1
+                ? new ResponseEntity<>("success", HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 
     @GetMapping(value="/pages/{bno}/{page}",
             produces = {
             MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ReplyPageDTO> getList(
-            @PathVariable("page") int page, @PathVariable("bno") Long bno) {
+    public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page,
+                                                @PathVariable("bno") Long bno) {
 
         log.info("getList=======================================");
 
@@ -52,7 +52,7 @@ public class ReplyController {
         log.info("get Reply List bno : " + bno);
         log.info("cri : " + cri);
 
-        return new ResponseEntity<>(service.getList(cri,bno), HttpStatus.OK);
+        return new ResponseEntity<>(service.getListPage(cri,bno), HttpStatus.OK);
 
     }
 

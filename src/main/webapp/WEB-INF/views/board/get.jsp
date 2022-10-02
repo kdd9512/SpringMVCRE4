@@ -150,7 +150,6 @@
                 <i class="fa fa-comments fa-fw"></i> Reply
                 <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
             </div>
-
             <div class="panel-body">
                 <%--  start ul  --%>
                 <ul class="chat">
@@ -169,7 +168,9 @@
                 <%--  end ul --%>
             </div>
             <%-- .panel chat-panel --%>
-            <div class="panel-footer"></div>
+            <div class="panel-footer">
+
+            </div>
             <%-- .panel-footer --%>
         </div>
         <%-- row end --%>
@@ -225,33 +226,34 @@
 
             function showList(page) {
 
-                replyService.getList({bno: bnoValue, page: page || 1}, function (replyCnt, list) {
+                replyService.getList({bno: bnoValue, page: page || 1},
+                    function (replyCnt, list) {
 
-                    console.log("reply Cnt : " + replyCnt);
-                    console.log("list : " + list);
+                        console.log("reply Cnt : " + replyCnt);
+                        console.log("list : " + list);
 
-                    // 페이지 번호가 -1 인 경우에 마지막 페이지를 찾아다 호출한다.
-                    if (page == -1) {
-                        let pageNum = Math.ceil(replyCnt / 10.0);
-                        showList(pageNum);
-                        return;
-                    }
+                        // 페이지 번호가 -1 인 경우에 마지막 페이지를 찾아다 호출한다.
+                        if (page == -1) {
+                            let pageNum = Math.ceil(replyCnt / 10.0);
+                            showList(pageNum);
+                            return;
+                        }
 
-                    let str = "";
-                    if (list == null || list.length == 0) {
-                        replyUL.html("");
+                        let str = "";
+                        if (list == null || list.length == 0) {
+                            // replyUL.html("");
 
-                        return;
-                    }
-                    for (let i = 0, len = list.length || 0; i < len; i++) {
-                        str += "<li class='left clearfix' data-rno='" + list[i].rno + "'>";
-                        str += "<div><div class='header'><strong class='primary-font'>" + list[i].replier + "</strong>";
-                        str += "<small class='pull-right text-muted'>" + replyService.displayTime(list[i].replyDate) + "</small></div>";
-                        str += "<p>" + list[i].reply + "</p></div></li>";
-                    }
-                    replyUL.html(str);
-                    showReplyPage(replyCnt);
-                }); // function end
+                            return;
+                        }
+                        for (let i = 0, len = list.length || 0; i < len; i++) {
+                            str += "<li class='left clearfix' data-rno='" + list[i].rno + "'>";
+                            str += "<div><div class='header'><strong class='primary-font'>[" + list[i].rno + "] " + list[i].replier + "</strong>";
+                            str += "<small class='pull-right text-muted'>" + replyService.displayTime(list[i].replyDate) + "</small></div>";
+                            str += "<p>" + list[i].reply + "</p></div></li>";
+                        }
+                        replyUL.html(str);
+                        showReplyPage(replyCnt);
+                    }); // function end
             } // showList end
 
             // modal 내의 모든 button 목록. 일단 다 불러와야 기능을 부여할 수 있으므로..
@@ -397,7 +399,7 @@
 
             }
 
-            replyPageFooter.on("click", function (e) {
+            replyPageFooter.on("click", "li a", function (e) {
                 e.preventDefault();
                 console.log("page clicked");
 
@@ -414,7 +416,7 @@
 
     <script>
         // bno 값
-        let bnoValue = '<c:out value="${board.bno}"/>';
+        <%--let bnoValue = '<c:out value="${board.bno}"/>';--%>
 
         // replyService.add() 테스트용.
         <%-- replyService.add(
@@ -491,7 +493,7 @@
                 $(arr).each(function (i, attach) {
 
                     if (attach.fileType) {
-                        let fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
+                        let fileCallPath = encodeURIComponent(attach.uploadPath + "/th_" + attach.uuid + "_" + attach.fileName);
 
                         str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
                             "data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "'>" +
@@ -507,8 +509,9 @@
                             "</div></li>";
 
                     }
-                    $(".uploadResult ul").html(str);
+
                 });
+                $(".uploadResult ul").html(str);
             }); // getJSON end.
 
         })

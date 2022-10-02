@@ -44,8 +44,8 @@
                bno,
                reply,
                replier,
-               replyDate,
-               updateDate
+               replydate,
+               updatedate
         from (
                  select /* INDEX(tbl_reply idx_reply) */
                      rownum rn,
@@ -53,8 +53,8 @@
                      rno,
                      reply,
                      replier,
-                     replyDate,
-                     updateDate
+                     replydate,
+                     updatedate
                  from tbl_reply
                  where bno = #{bno}
                    and rno > 0

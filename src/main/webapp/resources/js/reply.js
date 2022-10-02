@@ -28,7 +28,8 @@ let replyService = (function () {
         let bno = param.bno;
         let page = param.page || 1;
 
-        $.getJSON("/replies/pages/" + bno + "/" + page + ".json",
+        // $.getJSON("/replies/pages/" + bno + "/" + page + ".json", 데이터 타입변환 문제로 .json 붙히면 주소를 못찾음.
+        $.getJSON("/replies/pages/" + bno + "/" + page ,
             function (data) {
                 if (callback) {
                     // callback(data); -- 댓글 목록만을 가져온다.
@@ -88,7 +89,7 @@ let replyService = (function () {
 
     function get(rno, callback, error) {
 
-        $.get("/replies/" + rno + ".json", function(result) {
+        $.get("/replies/" + rno , function(result) {
 
             if (callback) {
                 callback(result);

@@ -71,7 +71,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     // 댓글 목록과 댓글 페이지 개수를 return
     @Override
-    public ReplyPageDTO getList(Criteria cri, Long bno) {
+    public ReplyPageDTO getListPage(Criteria cri, Long bno) {
 
         log.info("==========================");
         log.info("GET REPLY LIST : [CRI: " + cri + ", BNO : " + bno + " ]");
