@@ -26,4 +26,12 @@
         ]]>
     </select>
 
+    <delete id="deleteAllFile">
+        <![CDATA[
+        delete
+        from tbl_attach
+        where bno = #{bno}
+        ]]>
+    </delete>
+
 </mapper>

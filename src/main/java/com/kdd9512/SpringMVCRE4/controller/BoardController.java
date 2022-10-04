@@ -15,6 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -101,7 +104,11 @@ public class BoardController {
 //                         @ModelAttribute("cri") Criteria cri) {
         log.info("removed : [ " + bno + " ]");
 
+        List<BoardAttachVO> attachList = service.getAttachList(bno);
+
         if (service.remove(bno)) {
+            deleteAllFiles(attachList);
+
             attributes.addFlashAttribute("result", "success");
         }
         //          getListLink(); 가 이를 대신 수행한다.
@@ -122,6 +129,31 @@ public class BoardController {
         return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
     }
 
+    private void deleteAllFiles(List<BoardAttachVO> attachList) {
 
+        if (attachList == null || attachList.size() == 0) {
+            return;
+        }
+
+        attachList.forEach(attach -> {
+            try {
+                Path file = Paths.get("C:\\JAVA\\galupload" +
+                        attach.getUploadPath() + "\\" + attach.getUuid() + "_" + attach.getFileName());
+                Files.deleteIfExists(file);
+
+                if(Files.probeContentType(file).startsWith("image")) {
+
+                    Path thumbNail = Paths.get("C:\\JAVA\\galupload" +
+                            attach.getUploadPath() + "\\th_" + attach.getUuid() + "_" + attach.getFileName());
+                    Files.delete(thumbNail);
+                }
+
+            } catch(Exception e) {
+                log.error("Delete File Error : " + e.getMessage());
+            }
+
+        });
+
+    }
 
 }
