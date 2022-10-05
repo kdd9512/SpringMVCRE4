@@ -3,6 +3,60 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="../includes/header.jsp" %>
 
+<style type="text/css">
+
+    .uploadResult {
+        width: 100%;
+        background-color: gray;
+    }
+
+    .uploadResult ul {
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+    }
+
+    .uploadResult ul li img {
+        width: 50%;
+    }
+
+    .uploadResult ul li span {
+        color: white;
+    }
+
+    .bigPictureWrapper {
+        position: absolute;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: gray;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .bigPicture {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bigPicture img {
+        width: 600px;
+    }
+
+</style>
+<%-- style end --%>
+
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">Board Modify</h1>
@@ -16,7 +70,6 @@
 
             <div class="panel-heading">Board Modify Page</div>
             <div class="panel-body">
-
                 <form role="form" action="/board/modify" method="post">
 
                     <input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum}"/>">
@@ -72,6 +125,33 @@
     </div>
 </div>
 
+<div class="bigPictureWrapper">
+    <div class="bigPicture"></div>
+</div>
+
+<%-- File area start --%>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Files</div>
+            <div class="panel-body">
+            <div class="form-group uploadDiv">
+                <input type="file" name="uploadFile" multiple>
+            </div>
+            <%-- uploadDiv --%>
+            <div class="uploadResult">
+                <ul>
+                </ul>
+            </div>
+            <%-- uploadResult --%>
+        </div>
+            <%-- panel-body --%>
+        </div>
+        <%--panel--%>
+    </div>
+    <%-- col --%>
+</div><%-- Files row end  --%>
+
 <script type="text/javascript">
     $(document).ready(function () {
 
@@ -122,6 +202,105 @@
         });
 
     });
+</script>
+<script>
+    $(document).ready(function () {
+
+        let bno = "<c:out value="${board.bno}"/>";
+
+        $.getJSON("/board/getAttachList", {bno: bno}, function (arr) {
+            console.log(arr);
+
+            let str = "";
+
+            $(arr).each(function (i, attach) {
+
+                if (attach.fileType) {
+                    let fileCallPath = encodeURIComponent(attach.uploadPath + "/th_" + attach.uuid + "_" + attach.fileName);
+
+                    str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                        "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
+                        "<span>" + attach.fileName + "</span>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
+                        "<img src='/display?fileName=" + fileCallPath + "'>" +
+                        "</div></li>";
+                } else {
+                    let fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
+                    let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+                    // let originPath = attach.uploadPath + "\\" + attach.uuid + "_" + attach.fileName;
+                    // originPath = originPath.replace(new RegExp(/\\/g), "/");
+
+                    str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                        "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
+                        "<span> " + attach.fileName + "</span>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
+                        "<img src='/resources/img/attach.png'></a>" +
+                        "</div></li>";
+
+                }
+
+            });
+            $(".uploadResult ul").html(str);
+        }); // getJSON end.
+
+        $(".uploadResult").on("click", "li", function (e) {
+
+            console.log("view original image");
+
+            let liObj = $(this);
+
+            let path = encodeURIComponent(liObj.data("path") + "/" + liObj.data("uuid") + "_" + liObj.data("filename"));
+
+            if (liObj.data("type")) {
+                showImage(path.replace(new RegExp(/\\/g), "/"));
+            } else {
+                self.location = "/download?fileName=" + path
+            }
+
+        });
+
+        function showImage(fileCallPath) {
+            // alert(encodeURI(fileCallPath));
+            $(".bigPictureWrapper").css("display", "flex").show();
+            $(".bigPicture")
+                .html("<img src='/display?fileName=" + fileCallPath + "'>")
+                .animate({width: '100%', height: '100%'}, 1000);
+        }
+
+        $(".bigPictureWrapper").on("click", function(e){
+            $('.bigPicture').animate({width: '0%', height: '0%'}, 1000);
+            setTimeout(() => {
+                $(this).hide();
+            }, 1000);
+        });
+
+        $(".uploadResult").on("click", "button", function (e) {
+
+            let targetFile = $(this).data("file");
+            let type = $(this).data("type");
+            let targetLi = $(this).closest("li");
+
+            if (confirm("Are you sure you want to delete this file?")) {
+
+                console.log("delete this : " + targetFile);
+
+                $.ajax({
+                    url: '/deleteFile',
+                    data: ({fileName: targetFile, type: type}),
+                    dataType: "text",
+                    type: 'POST',
+                    success: function (result) {
+                        targetLi.remove();
+                    }
+                });
+
+            }
+        });
+
+    });
+
 </script>
 
 <%@ include file="../includes/footer.jsp" %>
