@@ -135,16 +135,16 @@
         <div class="panel panel-default">
             <div class="panel-heading">Files</div>
             <div class="panel-body">
-            <div class="form-group uploadDiv">
-                <input type="file" name="uploadFile" multiple>
+                <div class="form-group uploadDiv">
+                    <input type="file" name="uploadFile" multiple>
+                </div>
+                <%-- uploadDiv --%>
+                <div class="uploadResult">
+                    <ul>
+                    </ul>
+                </div>
+                <%-- uploadResult --%>
             </div>
-            <%-- uploadDiv --%>
-            <div class="uploadResult">
-                <ul>
-                </ul>
-            </div>
-            <%-- uploadResult --%>
-        </div>
             <%-- panel-body --%>
         </div>
         <%--panel--%>
@@ -168,17 +168,32 @@
 
             // data-oper 의 값에 따라 기능을 실행한다.
             switch (operation) {
-                case 'modify': {
-                    formObj.attr("action", "/board/modify").submit();
 
+                case 'modify': { // 게시물 수정
+                    console.log("SUBMIT ACTIVATED");
+                    let str = "";
+
+                    $(".uploadResult ul li").each(function (i, obj) {
+
+                        let jobj = $(obj);
+                        console.dir(jobj);
+
+                        // BoardVO 가 수집한 첨부파일의 정보의 일부를 이하 hidden 태그에 담아 jsp 에서 활용한다.
+                        str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
+                        str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
+                        str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("path") + "'>";
+                        str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("type") + "'>";
+                    });
+                    // formObj.attr("action", "/board/modify").submit();
+                    formObj.append(str).submit();
                     break;
                 }
-                case 'remove': {
+                case 'remove': { // 게시물 삭제
                     formObj.attr("action", "/board/remove");
 
                     break;
                 }
-                case 'list': {
+                case 'list': { // 게시물 표시
                     formObj.attr("action", "/board/list").attr("method", "GET"); // move to list
 
                     let pageNumTag = $("input[name='pageNum']").clone();
@@ -269,7 +284,7 @@
                 .animate({width: '100%', height: '100%'}, 1000);
         }
 
-        $(".bigPictureWrapper").on("click", function(e){
+        $(".bigPictureWrapper").on("click", function (e) {
             $('.bigPicture').animate({width: '0%', height: '0%'}, 1000);
             setTimeout(() => {
                 $(this).hide();
@@ -298,6 +313,95 @@
 
             }
         });
+
+        // 파일 업로드
+        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
+        let maxSize = 5242880; // 5MB
+
+        function checkExtension(fileName, fileSize) {
+
+            if (fileSize >= maxSize) {
+                alert("파일의 용량이 너무 큽니다(최대 5MB)");
+                return false;
+            }
+
+            if (regex.test(fileName)) {
+                alert("해당 종류의 파일은 업로드할 수 없습니다.");
+                return false;
+            }
+
+            return true;
+        } // checkExtension
+
+        $("input[type='file']").change(function (e) {
+
+            let formData = new FormData();
+            let inputFile = $("input[name='uploadFile']");
+            let files = inputFile[0].files;
+
+            for (let i = 0; i < files.length; i++) {
+
+                if (!checkExtension(files[i].name, files[i].size)) {
+                    return false;
+                }
+                formData.append("uploadFile", files[i]);
+            }
+
+            $.ajax({
+                url: "/uploadAjaxAction",
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: "POST",
+                dataType: "JSON",
+                success: function (result) {
+                    // upload 한 파일의 이름을 화면에 출력한다.
+                    showUploadResult(result);
+
+                }
+            }); // ajax
+
+        });
+
+        function showUploadResult(uploadResultArr) {
+            if (!uploadResultArr || uploadResultArr.length == 0) {
+                return;
+            }
+
+            let uploadUL = $(".uploadResult ul");
+            let str = "";
+
+            $(uploadResultArr).each(function (i, obj) {
+                if (obj.image) {
+
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/th_" + obj.uuid + "_" + obj.fileName);
+
+                    str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
+                        "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
+                        "<span>" + obj.fileName + "</span>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
+                        "<img src='/display?fileName=" + fileCallPath + "'>" +
+                        "</div></li>";
+                } else {
+                    let fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                    let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+                    // let originPath = obj.uploadPath + "\\" + obj.uuid + "_" + obj.fileName;
+                    // originPath = originPath.replace(new RegExp(/\\/g), "/");
+
+                    str += "<li data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' " +
+                        "data-filename='" + obj.fileName + "' data-type='" + obj.image + "'><div>" +
+                        "<span> " + obj.fileName + "</span>" +
+                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' " +
+                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
+                        "<img src='/resources/img/attach.png'></a>" +
+                        "</div></li>";
+                }
+            });
+            uploadUL.append(str);
+        };
+        // 파일 업로드 끝
+
 
     });
 
