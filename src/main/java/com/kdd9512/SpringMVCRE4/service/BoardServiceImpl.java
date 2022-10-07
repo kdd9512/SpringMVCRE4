@@ -54,7 +54,19 @@ public class BoardServiceImpl implements BoardService {
     public boolean modify(BoardVO board) {
         log.info("modify : [ " + board + " ]");
 
-        return mapper.update(board) == 1; // true / false 를 1과 0 으로 구분하므로
+        // 기존 첨부파일 데이터 삭제 후 다시 첨부파일 데이터를 삽입.
+        // 기존파일은 modify 창에서 param 으로 남아있으므로 기존파일이 지워지는게 아님.
+        attachMapper.deleteAllFile(board.getBno());
+        boolean modifyResult = mapper.update(board) == 1; // true / false 를 1과 0 으로 구분하므로
+
+        if (modifyResult && board.getAttachList() != null && board.getAttachList().size() > 0) {
+            board.getAttachList().forEach(attach -> {
+                attach.setBno(board.getBno());
+                attachMapper.insert(attach);
+
+            });
+        }
+        return modifyResult;
     }
 
     @Transactional
