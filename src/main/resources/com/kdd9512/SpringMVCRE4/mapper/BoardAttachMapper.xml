@@ -34,4 +34,12 @@
         ]]>
     </delete>
 
+    <select id="getOldFiles" resultType="com.kdd9512.SpringMVCRE4.domain.BoardAttachVO">
+        <![CDATA[
+        select *
+        from tbl_attach
+        where uploadpath = to_char(sysdate - 1, 'yyyy-MM-dd')
+        ]]>
+    </select>
+
 </mapper>

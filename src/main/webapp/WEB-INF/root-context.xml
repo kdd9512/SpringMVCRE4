@@ -53,6 +53,7 @@
     <!--  service 와 aop 폴더를 scan  -->
     <context:component-scan base-package="com.kdd9512.SpringMVCRE4.service"/>
     <context:component-scan base-package="com.kdd9512.SpringMVCRE4.aop"/>
+    <context:component-scan base-package="com.kdd9512.SpringMVCRE4.task"/>
 
     <!-- Spring AOP 때 이용한 ProxyFactoryBean 에 해당하는 것을 자동으로 생성하는 태그.
     이를 기술하게 되면 ProxyFactoryBean 으로 준비된 기능이 자동으로 포함된다.(ex: @Before) -->
