@@ -9,9 +9,11 @@
 
     <bean id="customAccessDenied" class="com.kdd9512.SpringMVCRE4.security.CustomAccessDeniedHandler"/>
     <bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>
+    <bean id="customPasswordEncoder" class="com.kdd9512.SpringMVCRE4.security.CustomNoOpPasswordEncoder"/>
 
     <!--<security:http auto-config="true" use-expressions="false">-->
-    <security:http auto-config="true" use-expressions="true">
+    <!--<security:http auto-config="true" use-expressions="true">-->
+    <security:http>
         <!-- 권한이 필요한 페이지 설정. access 는 해당 조건을 의미. -->
         <security:intercept-url pattern="/sample/all" access="permitAll"/>
         <!-- use-expression 을 false 로 설정했을 시에는 이하와 같이 작성.
@@ -31,16 +33,20 @@
 
     <security:authentication-manager>
         <security:authentication-provider>
-            <security:user-service>
-                <!-- spring security 5부터는 PasswordEncoder 가 반드시 필요하다. -->
-                <!--<security:user name="member" password="member" authorities="ROLE_MEMBER"/>-->
+            <!-- root-context 의 dataSource -->
+            <security:jdbc-user-service data-source-ref="dataSource"/>
 
-                <!-- 이하의 정보를 갖는 유저를 설정하여 해당 유저를 로그인처리한다. -->
-                <!-- 임시 방편으로 password 부분에 {noop} 을 붙혀 처리한다. -->
-                <security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
-                <security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
+            <!-- 패스워드 인코딩. 기존 {noop} 을 대체한다. -->
+            <security:password-encoder ref="customPasswordEncoder"/>
 
-            </security:user-service>
+            <!-- spring security 5부터는 PasswordEncoder 가 반드시 필요하다. -->
+            <!--<security:user name="member" password="member" authorities="ROLE_MEMBER"/>-->
+
+            <!-- 이하의 정보를 갖는 유저를 설정하여 해당 유저를 로그인처리한다. -->
+            <!-- 임시 방편으로 password 부분에 {noop} 을 붙혀 처리한다. -->
+            <!--<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+            <security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>-->
+
         </security:authentication-provider>
     </security:authentication-manager>
 
