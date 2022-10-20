@@ -9,7 +9,11 @@
 
     <bean id="customAccessDenied" class="com.kdd9512.SpringMVCRE4.security.CustomAccessDeniedHandler"/>
     <bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>
-    <bean id="customPasswordEncoder" class="com.kdd9512.SpringMVCRE4.security.CustomNoOpPasswordEncoder"/>
+    <!--  기존 passwordEncoder  -->
+    <!--<bean id="customPasswordEncoder" class="com.kdd9512.SpringMVCRE4.security.CustomNoOpPasswordEncoder"/>-->
+
+    <!--  암호화가 추가된 passwordEncoder  -->
+    <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
     <!--<security:http auto-config="true" use-expressions="false">-->
     <!--<security:http auto-config="true" use-expressions="true">-->
@@ -37,9 +41,14 @@
             <security:jdbc-user-service data-source-ref="dataSource"/>
 
             <!-- 패스워드 인코딩. 기존 {noop} 을 대체한다. -->
-            <security:password-encoder ref="customPasswordEncoder"/>
+            <!--<security:password-encoder ref="customPasswordEncoder"/>-->
 
-            <!-- spring security 5부터는 PasswordEncoder 가 반드시 필요하다. -->
+            <!-- 기존 인코더를 대체. 암호화가 추가된 인코더 -->
+            <security:password-encoder ref="bcryptPasswordEncoder"/>
+
+            <!-- spring security 5부터는 PasswordEncoder 가 반드시 필요하다.
+                이하는 임시방편이므로 실제 사용하면 안된다.
+            -->
             <!--<security:user name="member" password="member" authorities="ROLE_MEMBER"/>-->
 
             <!-- 이하의 정보를 갖는 유저를 설정하여 해당 유저를 로그인처리한다. -->

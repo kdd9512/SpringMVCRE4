@@ -301,8 +301,6 @@
             <version>${org.springframework.security-version}</version>
         </dependency>
 
-
-
     </dependencies>
 
     <build>
