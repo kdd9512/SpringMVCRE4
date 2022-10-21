@@ -31,7 +31,7 @@ public class MemberTests {
 
         String sql = "insert into tbl_member(userid, userpw, username) values (?,?,?)";
 
-        for (int i=0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
 
             Connection conn = null;
             PreparedStatement pstmt = null;
@@ -42,8 +42,8 @@ public class MemberTests {
                 pstmt.setString(2, pwEncoder.encode("pw" + i)); // 비밀번호 생성 후 encrypt
 
                 if (i < 80) {
-                   pstmt.setString(1, "user" + i);
-                   pstmt.setString(3, "일반사용자 " + i);
+                    pstmt.setString(1, "user" + i);
+                    pstmt.setString(3, "일반사용자 " + i);
                 } else if (i < 90) {
                     pstmt.setString(1, "manager" + i);
                     pstmt.setString(3, "매니저 " + i);
@@ -73,6 +73,60 @@ public class MemberTests {
                 }
             }
         } // for
+
+    }
+
+    @Test
+    public void testInsertAuth() {
+
+        String sql = "insert into tbl_member_auth (userid, auth) values (?,?)";
+
+        for (int i = 0; i < 100; i++) {
+
+            Connection conn = null;
+            PreparedStatement pstmt = null;
+
+            try {
+
+                conn = dataSrc.getConnection();
+                pstmt = conn.prepareStatement(sql);
+
+                if (i < 80) {
+                    pstmt.setString(1, "user" + i);
+                    pstmt.setString(2, "ROLE_USER");
+                } else if (i < 90) {
+                    pstmt.setString(1, "manager" + i);
+                    pstmt.setString(2, "ROLE_MANAGER");
+                } else {
+                    pstmt.setString(1, "admin" + i);
+                    pstmt.setString(2, "ROLE_ADMIN");
+                }
+
+                pstmt.executeUpdate();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            } finally {
+                if (pstmt != null) {
+                    try {
+                        pstmt.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        } // end of for
 
     }
 
