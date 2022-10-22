@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kdd9512.SpringMVCRE4.mapper.MemberMapper">
+
+    <resultMap id="memberMap" type="com.kdd9512.SpringMVCRE4.domain.MemberVO">
+        <id property="userid" column="userid"/>
+        <result property="userid" column="userid"/>
+        <result property="userpw" column="userpw"/>
+        <result property="userName" column="userName"/>
+        <result property="enabled" column="enabled"/>
+        <result property="regDate" column="regDate"/>
+        <collection property="authList" resultMap="authMap">
+        </collection>
+    </resultMap>
+
+    <resultMap id="authMap" type="com.kdd9512.SpringMVCRE4.domain.AuthVO">
+        <result property="userid" column="userid"/>
+        <result property="userpw" column="userpw"/>
+    </resultMap>
+
+    <select id="read" resultMap="memberMap">
+        <![CDATA[
+        select mem.userid
+             , userpw
+             , username
+             , enabled
+             , regDate
+             , updateDate
+             , auth
+        from tbl_member mem
+        left outer join tbl_member_auth auth
+        on mem.userid = auth.userid
+        where mem.userid = #{userid}
+        ]]>
+    </select>
+
+</mapper>
