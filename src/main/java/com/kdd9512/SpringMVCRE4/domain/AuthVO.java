@@ -7,6 +7,6 @@ public class AuthVO {
 
     // tbl_member_auth
     private String userid;
-    private String userpw;
+    private String auth;
 
 }

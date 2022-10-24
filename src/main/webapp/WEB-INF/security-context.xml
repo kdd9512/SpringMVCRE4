@@ -9,11 +9,15 @@
 
     <bean id="customAccessDenied" class="com.kdd9512.SpringMVCRE4.security.CustomAccessDeniedHandler"/>
     <bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>
+    <bean id="customUserDetailsService" class="com.kdd9512.SpringMVCRE4.security.CustomUserDetailService"/>
+
     <!--  기존 passwordEncoder  -->
     <!--<bean id="customPasswordEncoder" class="com.kdd9512.SpringMVCRE4.security.CustomNoOpPasswordEncoder"/>-->
 
     <!--  암호화가 추가된 passwordEncoder  -->
     <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+
 
     <!--<security:http auto-config="true" use-expressions="false">-->
     <!--<security:http auto-config="true" use-expressions="true">-->
@@ -36,7 +40,7 @@
     </security:http>
 
     <security:authentication-manager>
-        <security:authentication-provider>
+        <security:authentication-provider user-service-ref="customUserDetailsService">
             <!-- root-context 의 dataSource -->
             <!--<security:jdbc-user-service data-source-ref="dataSource"/>-->
 
