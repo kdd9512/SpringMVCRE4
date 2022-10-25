@@ -16,11 +16,10 @@
 
     <resultMap id="authMap" type="com.kdd9512.SpringMVCRE4.domain.AuthVO">
         <result property="userid" column="userid"/>
-        <result property="userpw" column="userpw"/>
+        <result property="auth" column="auth"/>
     </resultMap>
 
     <select id="read" resultMap="memberMap">
-        <![CDATA[
         select mem.userid
              , userpw
              , username
@@ -32,7 +31,6 @@
         left outer join tbl_member_auth auth
         on mem.userid = auth.userid
         where mem.userid = #{userid}
-        ]]>
     </select>
 
 </mapper>
