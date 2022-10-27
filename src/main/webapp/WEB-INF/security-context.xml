@@ -35,7 +35,10 @@
         <security:access-denied-handler ref="customAccessDenied"/>
         <security:form-login/>
         <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>
-        <security:logout logout-url="/customLogout" invalidate-session="true"/>
+        <!-- 로그아웃 시 쿠키를 삭제하도록 설정. delete-cookies -->
+        <security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSION_ID"/>
+        <!-- 자동로그인 설정을 위한 태그 -->
+        <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
         <!--<security:csrf disabled="true"/>-->
     </security:http>
 
