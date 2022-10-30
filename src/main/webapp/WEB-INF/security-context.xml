@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/security/spring-security.xsd ">
 
     <bean id="customAccessDenied" class="com.kdd9512.SpringMVCRE4.security.CustomAccessDeniedHandler"/>
-    <bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>
+    <!--<bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>-->
     <bean id="customUserDetailsService" class="com.kdd9512.SpringMVCRE4.security.CustomUserDetailService"/>
 
     <!--  기존 passwordEncoder  -->
@@ -34,7 +34,8 @@
         <!-- 접근거부 (500에러) 를 처리하는 handler. error 가 발생할경우, 해당 class 에서 redirect 시키는 페이지로 보낸다. -->
         <security:access-denied-handler ref="customAccessDenied"/>
         <security:form-login/>
-        <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>
+        <!--<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>-->
+        <security:form-login login-page="/customLogin"/>
         <!-- 로그아웃 시 쿠키를 삭제하도록 설정. delete-cookies -->
         <security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSION_ID"/>
         <!-- 자동로그인 설정을 위한 태그 -->
