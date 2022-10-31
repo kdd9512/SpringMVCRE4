@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,10 +50,12 @@ public class BoardController {
     }
 
     @GetMapping("/register")
+    @PreAuthorize("isAuthenticated()") // 로그인에 성공한 사용자만 사용할 수 있도록 설정
     public void register() {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("isAuthenticated()") // 로그인에 성공한 사용자만 사용할 수 있도록 설정
     public String register(BoardVO board, RedirectAttributes attributes) {
         log.info("====================================================================");
         log.info(("register : [ " + board + " ]"));

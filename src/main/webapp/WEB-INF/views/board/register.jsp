@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ include file="../includes/header.jsp" %>
 <style type="text/css">
 
@@ -69,6 +70,8 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <form role="form" action="/board/register" method="post">
+                    <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <div class="form-group">
                         <label>Title</label>
                         <input class="form-control" name="title">
@@ -80,7 +83,8 @@
                     </div>
                     <div class="form-group">
                         <label>Writer</label>
-                        <input class="form-control" name="writer">
+                        <input class="form-control" name="writer" readonly="readonly"
+                               value="<sec:authentication property="principal.username"/>" >
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                     <button type="reset" class="btn btn-default">Clear</button>

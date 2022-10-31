@@ -40,8 +40,9 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <!-- 반드시 springSecurityFilterChain 보다 이 Filter 가 먼저 작동해야 한다. 인코딩 깨짐 우려.-->
     <filter>
-        <filter-name>encoding</filter-name>
+        <filter-name>encodingFilter</filter-name>
         <filter-class>
             org.springframework.web.filter.CharacterEncodingFilter
         </filter-class>
@@ -50,9 +51,11 @@
             <param-value>UTF-8</param-value>
         </init-param>
     </filter>
+    <!-- 모든 주소에 적용. -->
     <filter-mapping>
-        <filter-name>encoding</filter-name>
+        <filter-name>encodingFilter</filter-name>
         <servlet-name>appServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <!--  spring security filter  -->
