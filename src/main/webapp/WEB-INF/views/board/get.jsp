@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ include file="../includes/header.jsp" %>
 
 <div class="row">
@@ -94,9 +96,17 @@
                            value="<c:out value="${board.writer}" />" readonly="readonly">
                 </div>
 
-                <button data-oper="modify" class="btn btn-default"
-                        onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">MODIFY
-                </button>
+                <%-- 글을 작성한 사람만 수정 버튼이 보이게 수정. --%>
+                <sec:authentication property="principal" var="pinfo"/>
+                <sec:authorize access="isAuthenticated()">
+                    <c:if test="${pinfo.username eq board.writer}">
+                        <button data-oper="modify" class="btn btn-default"
+                                onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">MODIFY
+                        </button>
+                    </c:if>
+                </sec:authorize>
+
+
                 <button data-oper="list" class="btn btn-info"
                         onclick="location.href='/board/list'">LIST
                 </button>
@@ -148,7 +158,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <i class="fa fa-comments fa-fw"></i> Reply
-                <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+                <%-- 로그인 한 사용자만 댓글작성 가능하게 수정. --%>
+                <sec:authorize access="isAuthenticated()">
+                    <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+                </sec:authorize>
             </div>
             <div class="panel-body">
                 <%--  start ul  --%>
@@ -538,7 +551,7 @@
                     .animate({width: '100%', height: '100%'}, 1000);
             }
 
-            $(".bigPictureWrapper").on("click", function(e){
+            $(".bigPictureWrapper").on("click", function (e) {
                 $('.bigPicture').animate({width: '0%', height: '0%'}, 1000);
                 setTimeout(() => {
                     $(this).hide();
