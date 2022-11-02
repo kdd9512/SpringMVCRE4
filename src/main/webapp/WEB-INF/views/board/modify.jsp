@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ include file="../includes/header.jsp" %>
 
 <style type="text/css">
@@ -71,7 +72,8 @@
             <div class="panel-heading">Board Modify Page</div>
             <div class="panel-body">
                 <form role="form" action="/board/modify" method="post">
-
+                    <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum}"/>">
                     <input type="hidden" name="amount" value="<c:out value="${cri.amount}"/>">
                     <%-- Criteria 에서 가져온 type / keyword 를 param 으로 추가.
@@ -115,8 +117,15 @@
                                value="<fmt:formatDate value="${board.updateDate}"/>" readonly="readonly">
                     </div>
 
-                    <button type="submit" data-oper="modify" class="btn btn-default">Modify</button>
-                    <button type="submit" data-oper="remove" class="btn btn-danger">DELETE</button>
+                    <%-- 현재 로그인한 사용자가 글의 작성자인 경우에만 보이도록 수정. --%>
+                    <sec:authentication property="principal" var="pinfo"/>
+                    <sec:authorize access="isAuthenticated()">
+                        <c:if test="${pinfo.username eq board.writer}">
+                            <button type="submit" data-oper="modify" class="btn btn-default">Modify</button>
+                            <button type="submit" data-oper="remove" class="btn btn-danger">DELETE</button>
+                        </c:if>
+                    </sec:authorize>
+
                     <button type="submit" data-oper="list" class="btn btn-info">List</button>
 
                 </form>
