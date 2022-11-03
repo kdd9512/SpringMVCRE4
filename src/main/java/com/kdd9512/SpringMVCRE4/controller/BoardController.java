@@ -82,8 +82,8 @@ public class BoardController {
 
     }
 
-    // 글을 수정 / 삭제하기 위해서는 뭔가 양식을 보내야 하므로 PostMapping 이 필요.
-    @PostMapping("/modify")
+    @PreAuthorize("principal.username == #board.writer") // 현재 수정을 시도하려는 사용자가 해당 글의 작성자와 같은지를 확인.
+    @PostMapping("/modify") // 글을 수정 / 삭제하기 위해서는 뭔가 양식을 보내야 하므로 PostMapping 이 필요.
     public String modify(BoardVO board, RedirectAttributes attributes,
                          Criteria cri) {
         // 더 이상 ModelAttribute 에 담아 param 을 전달할 필요가 없다. 해당 기능은 getListLink(); 가 대신함.
@@ -100,6 +100,7 @@ public class BoardController {
         return "redirect:/board/list" + cri.getListLink();
     }
 
+    @PreAuthorize("principal.username == #writer") // 현재 삭제를 시도하려는 사용자가 해당 글의 작성자와 같은지를 확인.
     @PostMapping("/remove") // 작업 후 redirect 해야하므로 RedirectAttributes
     public String remove(@RequestParam("bno") Long bno, RedirectAttributes attributes,
                          Criteria cri) {
@@ -131,6 +132,7 @@ public class BoardController {
 
         return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
     }
+
 
     private void deleteAllFiles(List<BoardAttachVO> attachList) {
 
