@@ -160,6 +160,9 @@
             return true;
         } // checkExtension
 
+        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfTokenValue = "${_csrf.token}";
+
         $("input[type='file']").change(function (e) {
 
             let formData = new FormData();
@@ -174,10 +177,15 @@
                 formData.append("uploadFile", files[i]);
             }
 
+            // Spring Security 를 사용하면서 POST PUT PATCH DELETE 를 사용하는 경우에는 CSRF 헤더와 토큰값을 반드시 필요.
+            // ajax 에 beforeSend 를 추가하여 CSRF 헤더와 토큰값을 전달.
             $.ajax({
                 url: "/uploadAjaxAction",
                 processData: false,
                 contentType: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+                },
                 data: formData,
                 type: "POST",
                 dataType: "JSON",
