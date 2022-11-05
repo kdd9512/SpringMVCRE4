@@ -279,10 +279,21 @@
             let modalRemoveBtn = $("#modalRemoveBtn");
             let modalRegisterBtn = $("#modalRegisterBtn");
 
+            let replier = null;
+
+            <sec:authorize access="isAuthenticated()">
+                replier = '<sec:authentication property="principal.username"/>';
+            </sec:authorize>
+
+            let csrfHeaderName = "${_csrf.parameterName}";
+            let csrfTokenValue = "${_csrf.token}";
+
             // 필요없는 버튼을 숨김처리하기 위한 script.
             $("#addReplyBtn").on("click", function (e) {
 
                 modal.find("input").val("");
+                // 로그인 한 경우, replier 변수에 기록된 username 을 받아옴.
+                modal.find("input[name='replier']").val(replier);
                 modalInputReplyDate.closest("div").hide();
                 modal.find("button[id != 'modalCloseBtn']").hide();
 
@@ -290,6 +301,11 @@
 
                 $(".modal").modal("show");
 
+            });
+
+            // CSRF 토큰을 전송. 여기에 기본값으로 설정하면($(document)), ajax 쓸때마다 beforeSend 써서 호출할 필요가 없어짐.
+            $(document).ajaxSend(function (e, xhr, option) {
+                xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
             })
 
             modalRegisterBtn.on("click", function () {

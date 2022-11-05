@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "/replies/")
@@ -20,9 +21,9 @@ public class ReplyController {
     private ReplyService service;
 
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/new",
-            consumes = "application/json",
-            produces = { MediaType.TEXT_PLAIN_VALUE})
+            consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> create(
             // JSON 데이터를 @ResponseBody 를 적용한 타입(ReplyVO)으로 형변환한다.
             @RequestBody ReplyVO vo) {

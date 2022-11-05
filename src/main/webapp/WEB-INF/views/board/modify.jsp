@@ -342,6 +342,9 @@
             return true;
         } // checkExtension
 
+        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfTokenValue = "${_csrf.token}";
+
         $("input[type='file']").change(function (e) {
 
             let formData = new FormData();
@@ -362,10 +365,13 @@
                 contentType: false,
                 data: formData,
                 type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+                },
                 dataType: "JSON",
                 success: function (result) {
                     // upload 한 파일의 이름을 화면에 출력한다.
-                    showUploadResult(result);
+                    showUploadResult(result); // 업로드 결과 처리.
 
                 }
             }); // ajax
