@@ -70,14 +70,16 @@ public class ReplyController {
     }
 
     // 댓글 삭제
-    @DeleteMapping(value = "/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<String> delete(@PathVariable("rno") Long rno) {
+    @PreAuthorize("principal.username == #vo.replier")
+    @DeleteMapping(value = "/{rno}")
+    public ResponseEntity<String> delete(@RequestBody ReplyVO vo,
+                                         @PathVariable("rno") Long rno) {
 
         log.info("Delete : " + rno);
 
-        return service.remove(rno) == 1 ?
-                new ResponseEntity<>("success", HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return service.remove(vo.getRno()) == 1
+                ? new ResponseEntity<>("success", HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 

@@ -43,10 +43,13 @@ let replyService = (function () {
         });
     }
 
-    function remove(rno, callback, error) {
+    // 삭제할 댓글 번호와 작성자를 전송.
+    function remove(rno, replier, callback, error) {
         $.ajax({
-            type: "DELETE",
+            type: "delete",
             url: "/replies/" + rno,
+            data: JSON.stringify({rno:rno, replier:replier}),
+            contentType:"application/json; charset=utf-8",
             success: function (deleteResult, status, xhr) {
                 if (callback) {
                     callback(deleteResult);

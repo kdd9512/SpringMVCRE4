@@ -375,6 +375,21 @@
 
                 let rno = modal.data("rno");
 
+                // 로그인 후 삭제기능 이용가능
+                if (!replier) {
+                    alert("먼저 로그인 해야합니다.");
+                    modal.modal("hide");
+                    return;
+                }
+
+                // 작성자 이외에는 수정권한 없음.
+                let originalReplier = modalInputReplier.val();
+                if (replier != originalReplier) {
+                    alert("이 댓글을 수정할 권한이 없습니다.");
+                    modal.modal("hide");
+                    return;
+                }
+
                 replyService.remove(rno, function (result) {
                     // 수정 후 modal 을 닫고 목록 새로고침.
                     alert(result);
