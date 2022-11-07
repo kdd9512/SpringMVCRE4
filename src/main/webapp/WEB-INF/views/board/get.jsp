@@ -357,10 +357,25 @@
             // 수정 버튼 event
             modalModBtn.on("click", function (e) {
 
+                let originalReplier = modalInputReplier.val();
+
                 let reply = {
                     rno: modal.data("rno"),
-                    reply: modalInputReply.val()
+                    reply: modalInputReply.val(),
+                    replier : originalReplier
                 };
+
+                if (!replier) {
+                    alert("로그인 하셔야 합니다.");
+                    modal.modal("hide");
+                    return;
+                }
+
+                if (replier != originalReplier) {
+                    alert("이 댓글을 수정할 권한이 없습니다.");
+                    modal.modal("hide");
+                    return;
+                }
 
                 // 수정 후 modal 을 닫고 목록 새로고침.
                 replyService.update(reply, function (result) {
