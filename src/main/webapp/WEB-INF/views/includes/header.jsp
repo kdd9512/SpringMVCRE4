@@ -1,3 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html PUBLIC PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="ko">
 <head>
@@ -116,7 +119,8 @@
                                     <span class="pull-right text-muted">40% Complete</span>
                                 </p>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: 40%">
                                         <span class="sr-only">40% Complete (success)</span>
                                     </div>
                                 </div>
@@ -132,7 +136,8 @@
                                     <span class="pull-right text-muted">20% Complete</span>
                                 </p>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: 20%">
                                         <span class="sr-only">20% Complete</span>
                                     </div>
                                 </div>
@@ -148,7 +153,8 @@
                                     <span class="pull-right text-muted">60% Complete</span>
                                 </p>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: 60%">
                                         <span class="sr-only">60% Complete (warning)</span>
                                     </div>
                                 </div>
@@ -164,7 +170,8 @@
                                     <span class="pull-right text-muted">80% Complete</span>
                                 </p>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: 80%">
                                         <span class="sr-only">80% Complete (danger)</span>
                                     </div>
                                 </div>
@@ -252,8 +259,14 @@
                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
+                    <sec:authorize access="isAuthenticated()">
+                        <li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </sec:authorize>
+                    <sec:authorize access="isAnonymous()">
+                        <li><a href="/customLogin"><i class="fa fa-sign-out fa-fw"></i> Login</a>
+                        </li>
+                    </sec:authorize>
                 </ul>
                 <!-- /.dropdown-user -->
             </li>
@@ -321,7 +334,8 @@
                         <!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span
+                                class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="#">Second Level Item</a>
@@ -370,6 +384,6 @@
     </nav>
 
     <div id="page-wrapper">
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
