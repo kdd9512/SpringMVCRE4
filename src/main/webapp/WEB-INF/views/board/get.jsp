@@ -206,7 +206,7 @@
                     </div>
                     <div class="form-group">
                         <label>Replier</label>
-                        <input class="form-control" name="replier" value="REPLIER"/>
+                        <input class="form-control" name="replier" value="REPLIER" readonly/>
                     </div>
                     <div class="form-group">
                         <label>Reply Date</label>
@@ -308,7 +308,7 @@
                 xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
             })
 
-            modalRegisterBtn.on("click", function () {
+            modalRegisterBtn.on("click", function (e) {
 
                 let reply = {
                     reply: modalInputReply.val(),
