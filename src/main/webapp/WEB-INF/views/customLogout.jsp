@@ -64,15 +64,9 @@
     $(".btn-success").on("click", function (e) {
         e.preventDefault();
         $("form").submit();
+        alert("로그아웃 하셨습니다");
+        location.replace("/");
     })
 </script>
-<c:if test="${param.logout != null}">
-    <script>
-        $(document).ready(function () {
-            alert("로그아웃 하셨습니다");
-        });
-    </script>
-</c:if>
-
 </body>
 </html>

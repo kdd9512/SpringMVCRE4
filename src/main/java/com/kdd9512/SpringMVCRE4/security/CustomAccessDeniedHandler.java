@@ -19,6 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
         log.error("Access Denied handler started.......");
+        log.error("ERROR : " + accessDeniedException);
         log.error("Redirected........");
 
 

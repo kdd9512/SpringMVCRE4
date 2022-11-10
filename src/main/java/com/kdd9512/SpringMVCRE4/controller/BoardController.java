@@ -1,9 +1,6 @@
 package com.kdd9512.SpringMVCRE4.controller;
 
-import com.kdd9512.SpringMVCRE4.domain.BoardAttachVO;
-import com.kdd9512.SpringMVCRE4.domain.BoardVO;
-import com.kdd9512.SpringMVCRE4.domain.Criteria;
-import com.kdd9512.SpringMVCRE4.domain.PageDTO;
+import com.kdd9512.SpringMVCRE4.domain.*;
 import com.kdd9512.SpringMVCRE4.service.BoardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -11,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -103,10 +101,14 @@ public class BoardController {
     @PreAuthorize("principal.username == #writer") // 현재 삭제를 시도하려는 사용자가 해당 글의 작성자와 같은지를 확인.
     @PostMapping("/remove") // 작업 후 redirect 해야하므로 RedirectAttributes
     public String remove(@RequestParam("bno") Long bno, RedirectAttributes attributes,
-                         Criteria cri) {
+                         Criteria cri, String writer, Authentication auth) {
         // 더 이상 ModelAttribute 에 담아 param 을 전달할 필요가 없다. 해당 기능은 getListLink(); 가 대신함.
 //                         @ModelAttribute("cri") Criteria cri) {
         log.info("removed : [ " + bno + " ]");
+
+        CustomUser user = (CustomUser)auth.getPrincipal();
+
+        log.info("auth : " + user);
 
         List<BoardAttachVO> attachList = service.getAttachList(bno);
 

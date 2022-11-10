@@ -38,8 +38,8 @@ public class Criteria { // 검색의 기준을 설정하기 위한 클래스.
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
                 .queryParam("pageNum", this.getPageNum())
                 .queryParam("amount", this.getAmount())
-                .queryParam("keyword", this.getKeyword())
-                .queryParam("type", this.getType());
+                .queryParam("type", this.getType())
+                .queryParam("keyword", this.getKeyword());
 
         return builder.toUriString();
 

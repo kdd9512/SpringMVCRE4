@@ -288,6 +288,7 @@
             let csrfHeaderName = "${_csrf.parameterName}";
             let csrfTokenValue = "${_csrf.token}";
 
+
             // 필요없는 버튼을 숨김처리하기 위한 script.
             $("#addReplyBtn").on("click", function (e) {
 
@@ -303,10 +304,33 @@
 
             });
 
+            // 기존 댓글의 상세 열람
+            $(".chat").on("click", "li", function () {
+
+                let rno = $(this).data("rno");
+                replyService.get(rno, function (reply) {
+                    // input 태그의 값을 가져와서 초기값으로 입력.
+                    modalInputReply.val(reply.reply);
+                    modalInputReplier.val(reply.replier);
+                    // 작성날짜는 바꾸면 안되므로 readonly 처리.
+                    modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
+                    modal.data("rno", reply.rno);
+
+                    // modalCloseBtn 을 hide & Modify / Remove 버튼을 show
+                    modal.find("button[id != 'modalCloseBtn']").hide();
+                    modalModBtn.show();
+                    modalRemoveBtn.show();
+
+                    $(".modal").modal("show");
+                })
+            });
+
             // CSRF 토큰을 전송. 여기에 기본값으로 설정하면($(document)), ajax 쓸때마다 beforeSend 써서 호출할 필요가 없어짐.
             $(document).ajaxSend(function (e, xhr, option) {
                 xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
-            })
+                console.log("csrfHeaderName : " + csrfHeaderName);
+                console.log("csrfTokenValue : " + csrfTokenValue);
+            });
 
             modalRegisterBtn.on("click", function (e) {
 
@@ -331,27 +355,6 @@
 
                 });
 
-            });
-
-            // 기존 댓글을 수정한다.
-            $(".chat").on("click", "li", function () {
-
-                let rno = $(this).data("rno");
-                replyService.get(rno, function (reply) {
-                    // input 태그의 값을 가져와서 초기값으로 입력.
-                    modalInputReply.val(reply.reply);
-                    modalInputReplier.val(reply.replier);
-                    // 작성날짜는 바꾸면 안되므로 readonly 처리.
-                    modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
-                    modal.data("rno", reply.rno);
-
-                    // modalCloseBtn 을 hide & Modify / Remove 버튼을 show
-                    modal.find("button[id != 'modalCloseBtn']").hide();
-                    modalModBtn.show();
-                    modalRemoveBtn.show();
-
-                    $(".modal").modal("show");
-                })
             });
 
             // 수정 버튼 event
@@ -451,8 +454,6 @@
                 }
 
                 str += "</ul></div>";
-
-                console.log("str : " + str);
 
                 replyPageFooter.html(str);
 

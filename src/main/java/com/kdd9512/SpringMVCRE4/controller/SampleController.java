@@ -29,11 +29,6 @@ public class SampleController {
 
     }
 
-    /*@GetMapping("/customLogout")
-    public void logoutGet() {
-        log.info("custom logout");
-    }*/
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
     @GetMapping("/annoMember")
     public void doMember2(){
