@@ -107,6 +107,9 @@
 
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
+        // CSRF 토큰
+        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfTokenValue = "${_csrf.token}";
 
         function checkExtension(fileName, fileSize) {
 
@@ -122,6 +125,7 @@
 
             return true;
         } // checkExtension
+
 
         // 업로드 부분 초기화를 위하여 아무 파일도 첨부되지 않은 <input type="file" ... > 을 복사.
         let cloneObj = $(".uploadDiv").clone();
@@ -151,6 +155,9 @@
                 url: "/uploadAjaxAction",
                 processData: false,
                 contentType: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+                },
                 data: formData,
                 type: "POST",
                 dataType: "JSON",
@@ -213,6 +220,9 @@
                 data: ({fileName : targetFile, type : type}),
                 dataType: "text",
                 type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+                },
                 success: function(result) {
                     alert(result);
                     targetLi.remove();

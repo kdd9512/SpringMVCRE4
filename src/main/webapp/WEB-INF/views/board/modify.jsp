@@ -72,6 +72,7 @@
             <div class="panel-heading">Board Modify Page</div>
             <div class="panel-body">
                 <form role="form" action="/board/modify" method="post">
+                    <sec:csrfInput/>
                     <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum}"/>">
@@ -145,6 +146,7 @@
             <div class="panel-heading">Files</div>
             <div class="panel-body">
                 <div class="form-group uploadDiv">
+                    <sec:csrfInput/>
                     <input type="file" name="uploadFile" multiple>
                 </div>
                 <%-- uploadDiv --%>
@@ -363,11 +365,11 @@
                 url: "/uploadAjaxAction",
                 processData: false,
                 contentType: false,
-                data: formData,
-                type: "POST",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
                 },
+                data: formData,
+                type: "POST",
                 dataType: "JSON",
                 success: function (result) {
                     // upload 한 파일의 이름을 화면에 출력한다.

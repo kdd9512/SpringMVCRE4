@@ -101,14 +101,10 @@ public class BoardController {
     @PreAuthorize("principal.username == #writer") // 현재 삭제를 시도하려는 사용자가 해당 글의 작성자와 같은지를 확인.
     @PostMapping("/remove") // 작업 후 redirect 해야하므로 RedirectAttributes
     public String remove(@RequestParam("bno") Long bno, RedirectAttributes attributes,
-                         Criteria cri, String writer, Authentication auth) {
+                         Criteria cri, String writer) {
         // 더 이상 ModelAttribute 에 담아 param 을 전달할 필요가 없다. 해당 기능은 getListLink(); 가 대신함.
 //                         @ModelAttribute("cri") Criteria cri) {
         log.info("removed : [ " + bno + " ]");
-
-        CustomUser user = (CustomUser)auth.getPrincipal();
-
-        log.info("auth : " + user);
 
         List<BoardAttachVO> attachList = service.getAttachList(bno);
 

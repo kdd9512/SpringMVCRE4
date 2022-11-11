@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <%--<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">--%>
 <html lang="en">
@@ -36,6 +37,7 @@
                 </div>
                 <div class="panel-body">
                     <form role="form" method="post" action="/customLogout">
+                        <sec:csrfInput/>
                         <fieldset>
                             <!-- Change this to a button or input when using this as a form -->
                             <a href="index.html" class="btn btn-lg btn-success btn-block">Logout</a>
@@ -64,9 +66,14 @@
     $(".btn-success").on("click", function (e) {
         e.preventDefault();
         $("form").submit();
-        alert("로그아웃 하셨습니다");
-        location.replace("/");
     })
 </script>
+<c:if test="${param.logout != null}">
+    <script>
+        $(document).ready(function () {
+            alert("로그아웃 하셨습니다");
+        });
+    </script>
+</c:if>
 </body>
 </html>

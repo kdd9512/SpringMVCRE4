@@ -112,6 +112,7 @@
                 </button>
 
                 <form id="operForm" action="/board/modify" method="get">
+                    <sec:csrfInput/>
                     <input type="hidden" id="bno" name="bno" value="<c:out value="${board.bno}"/>"/>
                     <%-- 전송된 Criteria 의 값을 받아 보관하고, 타 페이지로 전송한다. --%>
                     <input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum}"/>"/>
@@ -195,6 +196,7 @@
          aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                <sec:csrfInput/>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Reply Modal</h4>
@@ -374,6 +376,8 @@
                     return;
                 }
 
+                console.log("originalReplier : " + originalReplier)
+
                 if (replier != originalReplier) {
                     alert("이 댓글을 수정할 권한이 없습니다.");
                     modal.modal("hide");
@@ -408,7 +412,7 @@
                     return;
                 }
 
-                replyService.remove(rno, function (result) {
+                replyService.remove(rno, originalReplier, function (result) {
                     // 수정 후 modal 을 닫고 목록 새로고침.
                     alert(result);
                     modal.modal("hide");

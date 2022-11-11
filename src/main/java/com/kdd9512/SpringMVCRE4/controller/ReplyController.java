@@ -76,6 +76,7 @@ public class ReplyController {
                                          @PathVariable("rno") Long rno) {
 
         log.info("Delete : " + rno);
+        log.info("replier num : " + rno);
 
         return service.remove(vo.getRno()) == 1
                 ? new ResponseEntity<>("success", HttpStatus.OK)
@@ -86,7 +87,7 @@ public class ReplyController {
     // 댓글 수정
     @PreAuthorize("principal.username == #vo.replier")
     @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH},
-            value = "/{rno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+            value = "/{rno}", consumes = "application/json")
     public ResponseEntity<String> modify(@RequestBody ReplyVO vo, @PathVariable("rno") Long rno) {
 
         vo.setRno(rno);

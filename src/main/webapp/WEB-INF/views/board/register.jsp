@@ -70,6 +70,7 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <form role="form" action="/board/register" method="post">
+                    <sec:csrfInput/>
                     <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <div class="form-group">
