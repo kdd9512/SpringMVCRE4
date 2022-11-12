@@ -4,31 +4,11 @@
 
     <!-- Default set of monitored resources. If one of these changes, the    -->
     <!-- web application will be reloaded.                                   -->
-    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>/WEB-INF/web.xml</WatchedResource>
     <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
 
     <!-- Uncomment this to disable session persistence across Tomcat restarts -->
     <!--
     <Manager pathname="" />
     -->
-    <filter>
-        <display-name>springMultipartFilter</display-name>
-        <filter-name>springMultipartFilter</filter-name>
-        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springMultipartFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!-- spring security filter 추가하기 -->
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
 </Context>

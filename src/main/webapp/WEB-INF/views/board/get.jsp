@@ -330,8 +330,8 @@
             // CSRF 토큰을 전송. 여기에 기본값으로 설정하면($(document)), ajax 쓸때마다 beforeSend 써서 호출할 필요가 없어짐.
             $(document).ajaxSend(function (e, xhr, option) {
                 xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
-                console.log("csrfHeaderName : " + csrfHeaderName);
-                console.log("csrfTokenValue : " + csrfTokenValue);
+                console.log("ajaxSend csrfHeaderName : " + csrfHeaderName);
+                console.log("ajaxSend csrfTokenValue : " + csrfTokenValue);
             });
 
             modalRegisterBtn.on("click", function (e) {

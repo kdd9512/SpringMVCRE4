@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <%--<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">--%>
 <html lang="en">
@@ -55,7 +56,8 @@
                             <a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
                         </fieldset>
                         <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        <sec:csrfInput/>
+                        <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />--%>
                     </form>
                 </div>
             </div>

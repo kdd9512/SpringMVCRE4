@@ -70,9 +70,10 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <form role="form" action="/board/register" method="post">
-                    <sec:csrfInput/>
+
                     <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />--%>
+                    <sec:csrfInput/>
                     <div class="form-group">
                         <label>Title</label>
                         <input class="form-control" name="title">
@@ -85,7 +86,7 @@
                     <div class="form-group">
                         <label>Writer</label>
                         <input class="form-control" name="writer" readonly="readonly"
-                               value="<sec:authentication property="principal.username"/>" >
+                               value="<sec:authentication property="principal.username"/>">
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                     <button type="reset" class="btn btn-default">Clear</button>
@@ -104,6 +105,7 @@
             <div class="panel-heading">File Attach</div>
             <div class="panel-body">
                 <div class="form-group uploadDiv">
+                    <sec:csrfInput/>
                     <input type="file" name="uploadFile" multiple>
                 </div>
                 <%-- uploadDiv --%>
@@ -181,19 +183,22 @@
             // Spring Security 를 사용하면서 POST PUT PATCH DELETE 를 사용하는 경우에는 CSRF 헤더와 토큰값을 반드시 필요.
             // ajax 에 beforeSend 를 추가하여 CSRF 헤더와 토큰값을 전달.
             $.ajax({
+                type: "POST",
                 url: "/uploadAjaxAction",
                 processData: false,
                 contentType: false,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
-                },
                 data: formData,
-                type: "POST",
                 dataType: "JSON",
                 success: function (result) {
+                    console.log(result);
                     // upload 한 파일의 이름을 화면에 출력한다.
                     showUploadResult(result);
 
+                },
+                error: function (xhr, status, err) {
+                    if (err) {
+                        console.log(err);
+                    }
                 }
             }); // ajax
 
@@ -248,7 +253,7 @@
                 url: '/deleteFile',
                 data: ({fileName: targetFile, type: type}),
                 beforeSend: function (xhr) {
-                  xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+                    xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
                 },
                 dataType: "text",
                 type: 'POST',

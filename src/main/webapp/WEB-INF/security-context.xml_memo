@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd ">
+
+    <bean id="customAccessDenied" class="com.kdd9512.SpringMVCRE4.security.CustomAccessDeniedHandler"/>
+    <!--<bean id="customLoginSuccess" class="com.kdd9512.SpringMVCRE4.security.CustomLoginSuccessHandler"/>-->
+    <bean id="customUserDetailsService" class="com.kdd9512.SpringMVCRE4.security.CustomUserDetailService"/>
+
+    <!--  기존 passwordEncoder  -->
+    <!--<bean id="customPasswordEncoder" class="com.kdd9512.SpringMVCRE4.security.CustomNoOpPasswordEncoder"/>-->
+
+    <!--  암호화가 추가된 passwordEncoder  -->
+    <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+
+
+    <!--<security:http auto-config="true" use-expressions="false">-->
+    <!--<security:http auto-config="true" use-expressions="true">-->
+    <security:http>
+        <!-- 권한이 필요한 페이지 설정. access 는 해당 조건을 의미. -->
+        <security:intercept-url pattern="/sample/all" access="permitAll"/>
+        <!-- use-expression 을 false 로 설정했을 시에는 이하와 같이 작성.
+         <security:intercept-url pattern="/sample/member" access="ROLE_MEMBER"/>
+         -->
+        <security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')"/>
+        <security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"/>
+
+        <!--<security:access-denied-handler error-page="/accessError"/>-->
+        <!-- 접근거부 (500에러) 를 처리하는 handler. error 가 발생할경우, 해당 class 에서 redirect 시키는 페이지로 보낸다. -->
+        <security:access-denied-handler ref="customAccessDenied"/>
+        <!--<security:form-login/>-->
+        <!--<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>-->
+        <security:form-login login-page="/customLogin"/>
+        <!-- 로그아웃 시 쿠키를 삭제하도록 설정. delete-cookies -->
+        <security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSIONID"/>
+        <!-- 자동로그인 설정을 위한 태그 -->
+        <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
+        <!--<security:csrf disabled="true"/>-->
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="customUserDetailsService">
+            <!-- root-context 의 dataSource -->
+            <!--<security:jdbc-user-service data-source-ref="dataSource"/>-->
+
+            <!-- 이하의 SQL 명령을 이용하여 인증과 권한확인을 수행한다. 기존 dataSource 호출을 대체함. -->
+           <!-- <security:jdbc-user-service data-source-ref="dataSource"
+            users-by-username-query="select userid, userpw, enabled from tbl_member where userid = ?"
+            authorities-by-username-query="select userid, auth from tbl_member_auth where userio = ?"/>-->
+
+
+            <!-- 패스워드 인코딩. 기존 {noop} 을 대체한다. -->
+            <!--<security:password-encoder ref="customPasswordEncoder"/>-->
+
+            <!-- 기존 인코더를 대체. 암호화가 추가된 인코더 -->
+            <security:password-encoder ref="bcryptPasswordEncoder"/>
+
+            <!-- spring security 5부터는 PasswordEncoder 가 반드시 필요하다.
+                이하는 임시방편이므로 실제 사용하면 안된다.
+            -->
+            <!--<security:user name="member" password="member" authorities="ROLE_MEMBER"/>-->
+
+            <!-- 이하의 정보를 갖는 유저를 설정하여 해당 유저를 로그인처리한다. -->
+            <!-- 임시 방편으로 password 부분에 {noop} 을 붙혀 처리한다. -->
+            <!--<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+            <security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>-->
+
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+</beans>

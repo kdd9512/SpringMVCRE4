@@ -37,13 +37,13 @@
                 </div>
                 <div class="panel-body">
                     <form role="form" method="post" action="/customLogout">
-                        <sec:csrfInput/>
                         <fieldset>
                             <!-- Change this to a button or input when using this as a form -->
                             <a href="index.html" class="btn btn-lg btn-success btn-block">Logout</a>
                         </fieldset>
                         <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        <sec:csrfInput/>
+                        <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />--%>
                     </form>
                 </div>
             </div>
