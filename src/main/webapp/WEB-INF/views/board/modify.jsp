@@ -233,43 +233,50 @@
     $(document).ready(function () {
 
         let bno = "<c:out value="${board.bno}"/>";
+        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfTokenValue = "${_csrf.token}";
 
-        $.getJSON("/board/getAttachList", {bno: bno}, function (arr) {
-            console.log(arr);
+        $.getJSON("/board/getAttachList",
+            {
+                bno: bno,
 
-            let str = "";
+            },
+            function (arr) {
+                console.log(arr);
 
-            $(arr).each(function (i, attach) {
+                let str = "";
 
-                if (attach.fileType) {
-                    let fileCallPath = encodeURIComponent(attach.uploadPath + "/th_" + attach.uuid + "_" + attach.fileName);
+                $(arr).each(function (i, attach) {
 
-                    str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
-                        "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
-                        "<span>" + attach.fileName + "</span>" +
-                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
-                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
-                        "<img src='/display?fileName=" + fileCallPath + "'>" +
-                        "</div></li>";
-                } else {
-                    let fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
-                    let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
-                    // let originPath = attach.uploadPath + "\\" + attach.uuid + "_" + attach.fileName;
-                    // originPath = originPath.replace(new RegExp(/\\/g), "/");
+                    if (attach.fileType) {
+                        let fileCallPath = encodeURIComponent(attach.uploadPath + "/th_" + attach.uuid + "_" + attach.fileName);
 
-                    str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
-                        "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
-                        "<span> " + attach.fileName + "</span>" +
-                        "<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' " +
-                        "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
-                        "<img src='/resources/img/attach.png'></a>" +
-                        "</div></li>";
+                        str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                            "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
+                            "<span>" + attach.fileName + "</span>" +
+                            "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' " +
+                            "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>" +
+                            "<img src='/display?fileName=" + fileCallPath + "'>" +
+                            "</div></li>";
+                    } else {
+                        let fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
+                        let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+                        // let originPath = attach.uploadPath + "\\" + attach.uuid + "_" + attach.fileName;
+                        // originPath = originPath.replace(new RegExp(/\\/g), "/");
 
-                }
+                        str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' " +
+                            "data-filename='" + attach.fileName + "' data-type='" + attach.image + "'><div>" +
+                            "<span> " + attach.fileName + "</span>" +
+                            "<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' " +
+                            "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button<br>" +
+                            "<img src='/resources/img/attach.png'></a>" +
+                            "</div></li>";
 
-            });
-            $(".uploadResult ul").html(str);
-        }); // getJSON end.
+                    }
+
+                });
+                $(".uploadResult ul").html(str);
+            }); // getJSON end.
 
         $(".uploadResult").on("click", "li", function (e) {
 
@@ -315,6 +322,9 @@
                 $.ajax({
                     url: '/deleteFile',
                     data: ({fileName: targetFile, type: type}),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', csrfTokenValue);
+                    },
                     dataType: "text",
                     type: 'POST',
                     success: function (result) {
@@ -344,9 +354,6 @@
             return true;
         } // checkExtension
 
-        let csrfHeaderName = "${_csrf.parameterName}";
-        let csrfTokenValue = "${_csrf.token}";
-
         $("input[type='file']").change(function (e) {
 
             let formData = new FormData();
@@ -366,7 +373,7 @@
                 processData: false,
                 contentType: false,
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrfTokenValue);
                 },
                 data: formData,
                 type: "POST",

@@ -253,7 +253,7 @@
                 url: '/deleteFile',
                 data: ({fileName: targetFile, type: type}),
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrfTokenValue);
                 },
                 dataType: "text",
                 type: 'POST',
