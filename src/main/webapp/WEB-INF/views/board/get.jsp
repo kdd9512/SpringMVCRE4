@@ -196,7 +196,7 @@
          aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <sec:csrfInput/>
+                <input type="hidden" name="X-CSRF-TOKEN" value="${_csrf.token}" />
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Reply Modal</h4>
@@ -287,7 +287,7 @@
                 replier = '<sec:authentication property="principal.username"/>';
             </sec:authorize>
 
-            let csrfHeaderName = "${_csrf.parameterName}";
+            let csrfHeaderName = "X-CSRF-TOKEN";
             let csrfTokenValue = "${_csrf.token}";
 
 
@@ -329,8 +329,7 @@
 
             // CSRF 토큰을 전송. 여기에 기본값으로 설정하면($(document)), ajax 쓸때마다 beforeSend 써서 호출할 필요가 없어짐.
             $(document).ajaxSend(function (e, xhr, option) {
-                xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
-                console.log("ajaxSend csrfHeaderName : " + csrfHeaderName);
+                xhr.setRequestHeader("X-CSRF-TOKEN",csrfTokenValue);
                 console.log("ajaxSend csrfTokenValue : " + csrfTokenValue);
             });
 

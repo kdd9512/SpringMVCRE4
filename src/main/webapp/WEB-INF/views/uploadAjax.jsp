@@ -108,7 +108,7 @@
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|rar)$");
         let maxSize = 5242880; // 5MB
         // CSRF 토큰
-        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfHeaderName = "X-CSRF-TOKEN";
         let csrfTokenValue = "${_csrf.token}";
 
         function checkExtension(fileName, fileSize) {

@@ -73,7 +73,7 @@
 
                     <%-- CSRF token : Spring Security 를 사용하고 POST 방식으로 전송할 시 반드시 추가해야 한다. --%>
                     <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />--%>
-                    <sec:csrfInput/>
+                        <input type="hidden" name="X-CSRF-TOKEN" value="${_csrf.token}" />
                     <div class="form-group">
                         <label>Title</label>
                         <input class="form-control" name="title">
@@ -163,7 +163,7 @@
             return true;
         } // checkExtension
 
-        let csrfHeaderName = "${_csrf.parameterName}";
+        let csrfHeaderName = "X-CSRF-TOKEN";
         let csrfTokenValue = "${_csrf.token}";
 
         $("input[type='file']").change(function (e) {
